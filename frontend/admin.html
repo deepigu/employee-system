@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { margin-top: 40px; }
+    input, select, button { padding: 5px; margin: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<!-- Add Employee Form -->
+<h2>Add Employee</h2>
+<form id="addEmployeeForm">
+  <input type="text" id="employee_id" placeholder="Employee ID" required />
+  <input type="text" id="name" placeholder="Name" required />
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <select id="role">
+    <option value="employee">Employee</option>
+    <option value="admin">Admin</option>
+  </select>
+  <button type="submit">Add Employee</button>
+</form>
+<p id="addEmployeeMsg"></p>
+
+<!-- Employee Logs -->
+<h2>All Employee Logs</h2>
+<button id="loadLogsBtn">Load Logs</button>
+<table id="logsTable">
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Action</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Daily Report -->
+<h2>Daily Report</h2>
+<button id="loadReportBtn">Load Daily Report</button>
+<table id="reportTable">
+  <thead>
+    <tr>
+      <th>Employee ID</th>
+      <th>Logins</th>
+      <th>Logouts</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  // Replace this with your admin token from login
+  const adminToken = prompt("Enter your Admin token:");
+
+  // -------------------- Add Employee --------------------
+  document.getElementById("addEmployeeForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const employee_id = document.getElementById("employee_id").value;
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/admin/add-employee", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + adminToken
+        },
+        body: JSON.stringify({ employee_id, name, email, password, role })
+      });
+
+      const data = await res.json();
+      document.getElementById("addEmployeeMsg").innerText = data.message || "Employee added!";
+      document.getElementById("addEmployeeForm").reset();
+    } catch (err) {
+      console.error(err);
+      document.getElementById("addEmployeeMsg").innerText = "Error adding employee";
+    }
+  });
+
+  // -------------------- Load Logs --------------------
+  document.getElementById("loadLogsBtn").addEventListener("click", async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/admin/logs", {
+        headers: { "Authorization": "Bearer " + adminToken }
+      });
+      const logs = await res.json();
+      const tbody = document.querySelector("#logsTable tbody");
+      tbody.innerHTML = "";
+      logs.forEach(log => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${log.employee_id}</td><td>${log.action}</td><td>${log.timestamp}</td>`;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Error loading logs");
+    }
+  });
+
+  // -------------------- Load Daily Report --------------------
+  document.getElementById("loadReportBtn").addEventListener("click", async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/admin/report/daily", {
+        headers: { "Authorization": "Bearer " + adminToken }
+      });
+      const report = await res.json();
+      const tbody = document.querySelector("#reportTable tbody");
+      tbody.innerHTML = "";
+      report.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.employee_id}</td><td>${r.logins}</td><td>${r.logouts}</td>`;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Error loading report");
+    }
+  });
+</script>
+
+</body>
+</html>
