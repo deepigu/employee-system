@@ -35,7 +35,7 @@ router.post("/logout", authenticate, async (req, res) => {
 
       try {
         await axios.post(
-          "https://deepika27.app.n8n.cloud/webhook/employee-time-event",
+          "https://employee-system-84mh.onrender.com",
           { employee_id: req.employeeId, action: "logout", timestamp }
         );
       } catch (e) {
@@ -61,7 +61,7 @@ router.post("/break-start", authenticate, async (req, res) => {
 
       try {
         await axios.post(
-          "https://deepika27.app.n8n.cloud/webhook/employee-time-event",
+          "https://employee-system-84mh.onrender.com",
           { employee_id: req.employeeId, action: "break-start", timestamp }
         );
       } catch (e) {
