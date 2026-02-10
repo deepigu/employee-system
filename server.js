@@ -4,6 +4,8 @@
 // Import required packages
 // ----------------------------
 const express = require("express");
+require("dotenv").config();
+
 const cors = require("cors");
 
 // ----------------------------
@@ -38,3 +40,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
