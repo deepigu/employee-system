@@ -19,6 +19,9 @@ function isAdmin(req, res, next) {
     res.status(401).json({ message: "Unauthorized" });
   }
 }
+router.get("/dashboard", adminMiddleware, (req, res) => {
+  res.json({ message: "Admin access granted" });
+});
 
 // Get all employee logs
 router.get("/logs", isAdmin, (req, res) => {
