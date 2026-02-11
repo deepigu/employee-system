@@ -1,14 +1,12 @@
-require("dotenv").config(); // ✅ load .env
 // server.js
 
 // ----------------------------
 // Import required packages
 // ----------------------------
 const express = require("express");
-
-
 const cors = require("cors");
-app.use(cors({original: " https://employee-system-84mh.onrender.com"})
+const path = require("path");
+require("dotenv").config();
 
 // ----------------------------
 // Import route files
@@ -25,21 +23,24 @@ const app = express();
 // ----------------------------
 // Middleware
 // ----------------------------
-app.use(cors());           // Allow cross-origin requests
-app.use(express.json());   // Parse JSON in POST body
-// server.js
-const path = require("path");
+// Enable CORS for your frontend domain
+app.use(cors({
+  origin: "https://employee-system-84mh.onrender.com", // replace with your Render frontend URL
+  credentials: true
+}));
 
-//✅ ADD THIS - Serve static frontend files
+app.use(express.json());   // Parse JSON in POST body
+
+// Serve static frontend files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Root route - redirect to login
+// Redirect root "/" to login page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/login.html"));
 });
 
 // ----------------------------
-// Register routes
+// Register API routes
 // ----------------------------
 app.use("/api/auth", authRoutes);     // Login: POST /api/auth/login
 app.use("/api/admin", adminRoutes);   // Admin routes
@@ -50,10 +51,5 @@ app.use("/api/time", timeRoutes);     // Employee break/logout routes
 // ----------------------------
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
-
-
-
-
