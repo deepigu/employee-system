@@ -26,6 +26,16 @@ const app = express();
 // ----------------------------
 app.use(cors());           // Allow cross-origin requests
 app.use(express.json());   // Parse JSON in POST body
+// server.js
+const path = require("path");
+
+//✅ ADD THIS - Serve static frontend files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Root route - redirect to login
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/login.html"));
+});
 
 // ----------------------------
 // Register routes
@@ -41,6 +51,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
