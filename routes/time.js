@@ -1,4 +1,6 @@
 // routes/time.js
+const authMiddleware = require("../middleware/authMiddleware");
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
@@ -20,6 +22,21 @@ function authenticate(req, res, next) {
     res.status(401).json({ message: "Unauthorized" });
   }
 }
+router.post("/clockin", authMiddleware, (req, res) => {
+  res.json({ message: "Clock-in successful" });
+});
+
+router.post("/breakstart", authMiddleware, (req, res) => {
+  res.json({ message: "Break started" });
+});
+
+router.post("/breakend", authMiddleware, (req, res) => {
+  res.json({ message: "Break ended" });
+});
+
+router.post("/logout", authMiddleware, (req, res) => {
+  res.json({ message: "Logout successful" });
+});
 
 // ----------------------------
 // Logout
