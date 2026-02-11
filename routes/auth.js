@@ -1,7 +1,7 @@
 // routes/auth.js
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
+
 const db = require("../db"); // your SQLite db connection
 
 const router = express.Router();
@@ -30,25 +30,11 @@ router.post("/login", async (req, res) => {
         // Create JWT token
         const token = jwt.sign(
           { employee_id: user.employee_id, role: user.role },
-          SECRET,
+          process.env.SECRET_KEY,   // same secret
           { expiresIn: "8h" }
         );
 
-        // Try sending to n8n webhook (optional)
-        try {
-          await axios.post(
-            "https://employee-system-84mh.onrender.com",
-            {
-              employee_id: user.employee_id,
-              action: "login",
-              timestamp: new Date().toISOString(),
-              employee_name: user.name,
-              employee_email: user.email
-            }
-          );
-        } catch (e) {
-          console.log("⚠️ n8n webhook failed, login allowed");
-        }
+        
 
         // ✅ Send token, role, employee_id, and name back
         res.json({
