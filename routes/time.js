@@ -1,115 +1,88 @@
 // routes/time.js
-const authMiddleware = require("../middleware/authMiddleware");
+require("dotenv").config();
 
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const db = require("../db"); // Your SQLite database
+const db = require("../db");
 
 const router = express.Router();
-const SECRET = "SECRET_KEY";
+const SECRET = process.env.SECRET_KEY;
 
-// Middleware to verify token
+// Middleware
 function authenticate(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: "Unauthorized - No token" });
+  }
+
+  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, SECRET);
     req.employeeId = decoded.employee_id;
     next();
   } catch (err) {
-    res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized - Invalid token" });
   }
 }
-router.post("/clockin", authMiddleware, (req, res) => {
-  res.json({ message: "Clock-in successful" });
-});
-
-router.post("/breakstart", authMiddleware, (req, res) => {
-  res.json({ message: "Break started" });
-});
-
-router.post("/breakend", authMiddleware, (req, res) => {
-  res.json({ message: "Break ended" });
-});
-
-router.post("/logout", authMiddleware, (req, res) => {
-  res.json({ message: "Logout successful" });
-});
 
 // ----------------------------
+// Clock In
+// ----------------------------
+router.post("/clock-in", authenticate, async (req, res) => {
+  const timestamp = new Date().toISOString();
+
+  db.run(
+    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'login', ?)",
+    [req.employeeId, timestamp],
+    (err) => {
+      if (err) return res.status(500).json({ message: err.message });
+
+      res.json({ message: "Clock-in successful", timestamp });
+    }
+  );
+});
+
 // Logout
-// ----------------------------
-router.post("/logout", authenticate, async (req, res) => {
+router.post("/logout", authenticate, (req, res) => {
   const timestamp = new Date().toISOString();
 
   db.run(
     "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'logout', ?)",
     [req.employeeId, timestamp],
-    async (err) => {
+    function (err) {
       if (err) return res.status(500).json({ message: err.message });
-
-      try {
-        await axios.post(
-          "https://employee-system-84mh.onrender.com",
-          { employee_id: req.employeeId, action: "logout", timestamp }
-        );
-      } catch (e) {
-        console.log("⚠️ n8n webhook failed, logout recorded anyway");
-      }
 
       res.json({ message: "Logout successful", timestamp });
     }
   );
 });
 
-// ----------------------------
 // Break Start
-// ----------------------------
-router.post("/break-start", authenticate, async (req, res) => {
+router.post("/break-start", authenticate, (req, res) => {
   const timestamp = new Date().toISOString();
 
   db.run(
     "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'break-start', ?)",
     [req.employeeId, timestamp],
-    async (err) => {
+    function (err) {
       if (err) return res.status(500).json({ message: err.message });
-
-      try {
-        await axios.post(
-          "https://employee-system-84mh.onrender.com",
-          { employee_id: req.employeeId, action: "break-start", timestamp }
-        );
-      } catch (e) {
-        console.log("⚠️ n8n webhook failed, break-start recorded anyway");
-      }
 
       res.json({ message: "Break started", timestamp });
     }
   );
 });
 
-// ----------------------------
 // Break End
-// ----------------------------
-router.post("/break-end", authenticate, async (req, res) => {
+router.post("/break-end", authenticate, (req, res) => {
   const timestamp = new Date().toISOString();
 
   db.run(
     "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'break-end', ?)",
     [req.employeeId, timestamp],
-    async (err) => {
+    function (err) {
       if (err) return res.status(500).json({ message: err.message });
-
-      try {
-        await axios.post(
-          "https://deepika27.app.n8n.cloud/webhook/employee-time-event",
-          { employee_id: req.employeeId, action: "break-end", timestamp }
-        );
-      } catch (e) {
-        console.log("⚠️ n8n webhook failed, break-end recorded anyway");
-      }
 
       res.json({ message: "Break ended", timestamp });
     }
