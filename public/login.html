@@ -31,29 +31,28 @@ async function login() {
   }
 
   try {
-    const response = await fetch("https://employee-system-84mh.onrender.com", {
+    const response = await fetch("https://employee-system-84mh.onrender.com/api/auth/login", {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: { 
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ email, password })
     });
-    .then(res => res.json())
-.then(data => {
-  console.log(data);
-})
-.catch(err => console.error("Error:", err));
 
     const data = await response.json();
+
     if (!response.ok) {
       msg.innerText = data.message || "Login failed";
       return;
     }
 
-    // Save login details
+    // Save token and details
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
     localStorage.setItem("employee_id", data.employee_id);
-    localStorage.setItem("employee_name", data.employee_name || "Unknown");
+    localStorage.setItem("employee_name", data.name);
 
+    // Redirect
     if (data.role === "admin") {
       window.location.href = "admin.html";
     } else {
@@ -61,11 +60,12 @@ async function login() {
     }
 
   } catch (error) {
+    console.error("Login error:", error);
     msg.innerText = "Cannot connect to server";
-    console.error(error);
   }
 }
 </script>
+
 
 </body>
 </html>
