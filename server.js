@@ -1,5 +1,3 @@
-// server.js
-
 // ----------------------------
 // Import required packages
 // ----------------------------
@@ -31,12 +29,22 @@ app.use(cors({
 
 app.use(express.json());   // Parse JSON in POST body
 
-// Serve static frontend files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, "public")));
+// ----------------------------
+// Serve static frontend files
+// ----------------------------
+app.use(express.static(path.join(__dirname, "public"))); // put HTML/CSS/JS inside "public" folder
 
-// Redirect root "/" to login page
+// Serve login, admin, and employee pages
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
+app.get("/admin.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+});
+
+app.get("/employee.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "employee.html"));
 });
 
 // ----------------------------
@@ -53,5 +61,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
-
