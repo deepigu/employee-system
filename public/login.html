@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Employee Login</title>
+  <title>Employee/Admin Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h2>Employee Login</h2>
+  <h2>Employee/Admin Login</h2>
 
   <input type="email" id="email" placeholder="Email" required />
   <input type="password" id="password" placeholder="Password" required />
 
-  <button class="btn clock-in" onclick="login()">Login</button>
+  <button class="btn" onclick="login()">Login</button>
   <p id="msg" style="color:red;"></p>
 </div>
 
@@ -22,7 +22,6 @@ async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("msg");
-
   msg.innerText = "";
 
   if (!email || !password) {
@@ -36,26 +35,28 @@ async function login() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email: email, password: password })
+      body: JSON.stringify({ email, password })
     });
 
     const data = await response.json();
-    console.log("Login response:" , data);
+    console.log("Login response:", data);
 
     if (!response.ok) {
       msg.innerText = data.message || "Login failed";
       return;
     }
 
+    // Save to localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
     localStorage.setItem("employee_id", data.employee_id);
     localStorage.setItem("employee_name", data.name);
 
+    // Redirect based on role
     if (data.role === "admin") {
-      window.location.href = "admin.html";
+      window.location.href = "admin.html";       // admin page
     } else {
-      window.location.href = "employee.html";
+      window.location.href = "employee.html";    // employee page
     }
 
   } catch (error) {
