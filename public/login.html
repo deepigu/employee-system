@@ -3,18 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <title>Employee/Admin Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 380px;
+      background: #ffffff;
+      padding: 36px 30px;
+      border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #111827;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      outline: none;
+      font-size: 15px;
+      transition: 0.2s ease;
+    }
+
+    input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px 14px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn:active {
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+
+    #msg {
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        padding: 28px 20px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
 <div class="container">
-  <h2>Employee/Admin Login</h2>
+  <h2>Employee / Admin Login</h2>
 
   <input type="email" id="email" placeholder="Email" required />
   <input type="password" id="password" placeholder="Password" required />
 
   <button class="btn" onclick="login()">Login</button>
-  <p id="msg" style="color:red;"></p>
+
+  <p id="msg"></p>
 </div>
 
 <script>
@@ -22,7 +122,9 @@ async function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("msg");
+
   msg.innerText = "";
+  msg.style.color = "red";
 
   if (!email || !password) {
     msg.innerText = "Email and password required";
@@ -46,18 +148,23 @@ async function login() {
       return;
     }
 
+    // Success message
+    msg.style.color = "green";
+    msg.innerText = "Login successful! Redirecting...";
+
     // Save to localStorage
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
     localStorage.setItem("employee_id", data.employee_id);
     localStorage.setItem("employee_name", data.name);
 
-    // Redirect based on role
-    if (data.role === "admin") {
-      window.location.href = "admin.html";       // admin page
-    } else {
-      window.location.href = "employee.html";    // employee page
-    }
+    setTimeout(() => {
+      if (data.role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "employee.html";
+      }
+    }, 1000);
 
   } catch (error) {
     console.error(error);
