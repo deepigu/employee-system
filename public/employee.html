@@ -1,66 +1,285 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>Employee Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<div class="container">
-  <h2>Employee Dashboard</h2>
-  <p id="welcome"></p>
+  <style>
+    * { box-sizing: border-box; }
 
-  <button onclick="clockIn()">Clock In</button>
-  <button onclick="startBreak()">Break Start</button>
-  <button onclick="endBreak()">Break End</button>
-  <button onclick="logout()">Logout</button>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      min-height: 100vh;
+      padding: 22px;
+      color: #111827;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-  <p id="msg"></p>
-</div>
+    .wrap {
+      width: 100%;
+      max-width: 900px;
+    }
 
-<script>
-const BASE_URL = "https://employee-system-84mh.onrender.com";
-const token = localStorage.getItem("token");
-const name = localStorage.getItem("employee_name");
+    /* Top bar */
+    .topbar {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
+    }
 
-document.getElementById("welcome").innerText =
-  "Welcome " + name;
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
-async function callAPI(endpoint) {
-  try {
-    const res = await fetch(BASE_URL + endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+    }
+
+    .brand h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .sub {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 800;
+      font-size: 13px;
+      border: 1px solid #e0e7ff;
+      white-space: nowrap;
+    }
+
+    /* Cards */
+    .grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: start;
       }
-    });
+    }
 
-    const data = await res.json();
-    document.getElementById("msg").innerText = data.message;
-  } catch (err) {
-    document.getElementById("msg").innerText = "Server error";
-  }
-}
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
+    }
 
-function clockIn() {
-  callAPI("/api/time/clock-in");
-}
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 900;
+    }
 
-function startBreak() {
-  callAPI("/api/time/break-start");
-}
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+      margin: 0 0 12px;
+    }
 
-function endBreak() {
-  callAPI("/api/time/break-end");
-}
+    /* Buttons */
+    .btn {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      color: #fff;
+      margin-top: 10px;
+    }
 
-function logout() {
-  callAPI("/api/time/logout");
-  localStorage.clear();
-  window.location.href = "/";
-}
-</script>
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
+    }
 
+    .btn:active {
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+    }
+
+    .success {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    #msg {
+      margin: 12px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h2>Employee Dashboard</h2>
+          <p class="sub">Clock in, manage breaks, and logout</p>
+        </div>
+      </div>
+      <div class="chip" id="welcome"></div>
+    </div>
+
+    <div class="grid">
+      <!-- Actions -->
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <p class="muted">Use the buttons below to update your work status.</p>
+
+        <button class="btn success" onclick="clockIn()">Clock In</button>
+        <button class="btn warning" onclick="startBreak()">Break Start</button>
+        <button class="btn primary" onclick="endBreak()">Break End</button>
+        <button class="btn danger" onclick="logout()">Logout</button>
+
+        <p id="msg"></p>
+      </div>
+
+      <!-- Status card -->
+      <div class="card">
+        <h3>Status</h3>
+        <p class="muted">
+          Your latest action result will appear here.
+        </p>
+        <div style="padding:14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;">
+          <div style="font-weight:900;color:#111827;margin-bottom:6px;">Last Message</div>
+          <div id="statusBox" style="color:#374151;font-weight:600;">No action yet.</div>
+        </div>
+
+        <p class="muted" style="margin-top:12px;">
+          Tip: Always click “Break End” after your break.
+        </p>
+      </div>
+    </div>
+
+    <div class="note">Employee Login Automation • Employee Panel</div>
+  </div>
+
+  <script>
+    const BASE_URL = "https://employee-system-84mh.onrender.com";
+    const token = localStorage.getItem("token");
+    const name = localStorage.getItem("employee_name");
+
+    // If not logged in, go back to login
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
+
+    async function callAPI(endpoint) {
+      const msgEl = document.getElementById("msg");
+      const statusBox = document.getElementById("statusBox");
+
+      msgEl.style.color = "#111827";
+      msgEl.innerText = "Processing...";
+      statusBox.innerText = "Processing...";
+
+      try {
+        const res = await fetch(BASE_URL + endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          msgEl.style.color = "red";
+          msgEl.innerText = data.message || "Request failed";
+          statusBox.innerText = data.message || "Request failed";
+          return;
+        }
+
+        msgEl.style.color = "green";
+        msgEl.innerText = data.message;
+        statusBox.innerText = data.message;
+
+      } catch (err) {
+        msgEl.style.color = "red";
+        msgEl.innerText = "Server error";
+        statusBox.innerText = "Server error";
+      }
+    }
+
+    function clockIn() {
+      callAPI("/api/time/clock-in");
+    }
+
+    function startBreak() {
+      callAPI("/api/time/break-start");
+    }
+
+    function endBreak() {
+      callAPI("/api/time/break-end");
+    }
+
+    function logout() {
+      callAPI("/api/time/logout");
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+  </script>
 </body>
 </html>
