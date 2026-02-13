@@ -218,11 +218,14 @@
     const BASE_URL = "https://employee-system-84mh.onrender.com";
     const token = localStorage.getItem("token");
     const name = localStorage.getItem("employee_name");
-
+    const role = localStorage.getItem("role");
     // If not logged in, go back to login
     if (!token) {
       window.location.href = "login.html";
     }
+    if (role !== "employee") {
+  window.location.href = "admin.html";
+}
 
     document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
 
