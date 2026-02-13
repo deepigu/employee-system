@@ -1,85 +1,422 @@
+Admin class="html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Login</title>
+  <title>Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    *{box-sizing:border-box}
-    body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4f46e5,#9333ea);padding:20px}
-    .container{width:100%;max-width:380px;background:#fff;padding:36px 30px;border-radius:16px;box-shadow:0 18px 45px rgba(0,0,0,.25);text-align:center}
-    h2{margin:0 0 20px;color:#111827;font-size:22px;font-weight:800}
-    input{width:100%;padding:12px 14px;margin:10px 0;border-radius:10px;border:1px solid #d1d5db;outline:none;font-size:15px}
-    input:focus{border-color:#4f46e5;box-shadow:0 0 0 4px rgba(79,70,229,.18)}
-    .btn{width:100%;padding:12px 14px;margin-top:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#4f46e5,#9333ea);color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:.2s}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(79,70,229,.35)}
-    #msg{margin-top:12px;font-size:14px;font-weight:600}
-    .link{margin-top:14px;font-size:13px}
-    .link a{color:#4f46e5;font-weight:700;text-decoration:none}
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      min-height: 100vh;
+      padding: 22px;
+      color: #111827;
+    }
+
+    /* Layout container */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+    }
+
+    .brand h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid #e0e7ff;
+      white-space: nowrap;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 10px 12px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      background: linear-gradient(135deg, #4f46e5, #9333ea);
+      color: #fff;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.35);
+    }
+
+    .btn.secondary {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 10px 18px rgba(0,0,0,0.08);
+    }
+
+    /* Grid */
+    .grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .grid {
+        grid-template-columns: 420px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .form-grid input,
+    .form-grid select {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+      transition: 0.2s ease;
+    }
+
+    .form-grid input:focus,
+    .form-grid select:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    #addMsg {
+      margin: 10px 0 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 560px;
+    }
+
+    th, td {
+      padding: 12px 12px;
+      text-align: left;
+      border-bottom: 1px solid #eef2f7;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #111827;
+      font-weight: 900;
+    }
+
+    tr:hover td {
+      background: #f9fafb;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+      margin: 6px 0 0;
+    }
+
+    /* Footer note */
+    .note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+    }
   </style>
 </head>
+
 <body>
+  <div class="wrap">
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p class="sub">Manage employees and monitor login logs</p>
+        </div>
+      </div>
 
-<div class="container">
-  <h2>Admin Login</h2>
+      <div class="right">
+        <div class="chip">Welcome, <span id="adminName"></span></div>
+        <button class="btn secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
 
-  <input type="email" id="email" placeholder="Admin Email" required />
-  <input type="password" id="password" placeholder="Password" required />
+    <!-- Main Grid -->
+    <div class="grid">
+      <!-- Add Employee -->
+      <div class="card">
+        <h3>Add New Employee</h3>
+        <p class="muted">Create employee/admin accounts securely.</p>
 
-  <button class="btn" onclick="loginAdmin()">Login</button>
-  <p id="msg"></p>
+        <div class="form-grid">
+          <input type="text" id="employee_id" placeholder="Employee ID" />
+          <input type="text" id="name" placeholder="Name" />
+          <input type="email" id="email" placeholder="Email" />
+          <input type="password" id="password" placeholder="Password" />
 
-  <div class="link">Are you an employee? <a href="employee-login.html">Go to Employee Login</a></div>
-</div>
+          <select id="role">
+            <option value="employee">Employee</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
 
-<script>
-async function loginAdmin() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const msg = document.getElementById("msg");
-  msg.innerText = "";
-  msg.style.color = "red";
+        <div class="actions">
+          <button class="btn" onclick="addEmployee()">Add Employee</button>
+          <button class="btn secondary" onclick="clearForm()">Clear</button>
+        </div>
 
-  if (!email || !password) {
-    msg.innerText = "Email and password required";
-    return;
-  }
+        <p id="addMsg"></p>
+      </div>
 
-  try {
-    const response = await fetch("https://employee-system-84mh.onrender.com/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
+      <!-- Logs -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+          <div>
+            <h3 style="margin:0;">Employee Logs</h3>
+            <p class="muted">Track login/logout events in real time.</p>
+          </div>
+          <button class="btn" onclick="fetchLogs()">Refresh Logs</button>
+        </div>
 
-    const data = await response.json();
+        <div class="table-wrap" style="margin-top:12px;">
+          <table id="logsTable">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Action</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Logs will appear here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    if (!response.ok) {
-      msg.innerText = data.message || "Login failed";
-      return;
+    <div class="note">Employee Login Automation • Admin Panel</div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    const adminName = localStorage.getItem("employee_name");
+    document.getElementById("adminName").innerText = adminName || "Admin";
+
+    // If not logged in, send back to login
+    if (!token) {
+      window.location.href = "login.html";
     }
 
-    // Role check: admin only
-    if (data.role !== "admin") {
-      msg.innerText = "This page is for admins only.";
-      return;
+    function logout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("employee_id");
+      localStorage.removeItem("employee_name");
+      window.location.href = "login.html";
     }
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("role", data.role);
-    localStorage.setItem("employee_id", data.employee_id);
-    localStorage.setItem("employee_name", data.name);
+    function clearForm() {
+      document.getElementById("employee_id").value = "";
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("role").value = "employee";
+      const addMsg = document.getElementById("addMsg");
+      addMsg.innerText = "";
+    }
 
-    msg.style.color = "green";
-    msg.innerText = "Login successful! Redirecting...";
-    setTimeout(() => window.location.href = "admin.html", 800);
+    // ----------------------------
+    // Add Employee
+    // ----------------------------
+    async function addEmployee() {
+      const id = document.getElementById("employee_id").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
 
-  } catch (error) {
-    console.error(error);
-    msg.innerText = "Cannot connect to server";
-  }
-}
-</script>
+      const addMsg = document.getElementById("addMsg");
+      addMsg.innerText = "";
+      addMsg.style.color = "red";
 
+      if (!id || !name || !email || !password || !role) {
+        addMsg.innerText = "All fields are required";
+        return;
+      }
+
+      try {
+        const response = await fetch("https://employee-system-84mh.onrender.com/api/admin/add-employee", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ employee_id: id, name, email, password, role })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          addMsg.style.color = "red";
+          addMsg.innerText = data.message || "Failed to add employee";
+          return;
+        }
+
+        addMsg.style.color = "green";
+        addMsg.innerText = `Employee added: ${data.name} (${data.role})`;
+
+        // Clear inputs
+        clearForm();
+
+      } catch (error) {
+        console.error(error);
+        addMsg.style.color = "red";
+        addMsg.innerText = "Cannot connect to server";
+      }
+    }
+
+    // ----------------------------
+    // Fetch Employee Logs
+    // ----------------------------
+    async function fetchLogs() {
+      const tbody = document.querySelector("#logsTable tbody");
+      tbody.innerHTML = "";
+
+      try {
+        const response = await fetch("https://employee-system-84mh.onrender.com/api/admin/logs", {
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message}</td></tr>`;
+          return;
+        }
+
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="3">No logs found</td></tr>`;
+          return;
+        }
+
+        data.forEach(log => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${log.employee_id}</td><td>${log.action}</td><td>${log.timestamp}</td>`;
+          tbody.appendChild(tr);
+        });
+
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
+      }
+    }
+
+    // Fetch logs immediately on page load
+    fetchLogs();
+  </script>
 </body>
 </html>
