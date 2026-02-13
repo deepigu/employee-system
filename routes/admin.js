@@ -91,5 +91,34 @@ router.post("/add-employee", isAdmin, (req, res) => {
     }
   );
 });
+// ✅ 1) LIST ALL EMPLOYEES (Admin only)
+router.get("/employees", authMiddleware, adminMiddleware, (req, res) => {
+  const sql = `SELECT employee_id, name, email, role FROM employees ORDER BY employee_id ASC`;
 
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server error" });
+    }
+    res.json(rows || []);
+  });
+});
+
+// ✅ 2) DELETE EMPLOYEE (Admin only)
+router.delete("/employees/:employee_id", authMiddleware, adminMiddleware, (req, res) => {
+  const { employee_id } = req.params;
+
+  const sql = `DELETE FROM employees WHERE employee_id = ?`;
+
+  db.run(sql, [employee_id], function (err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Server error" });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+    res.json({ message: "Employee deleted successfully" });
+  });
+});
 module.exports = router;
