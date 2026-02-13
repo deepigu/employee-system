@@ -20,12 +20,8 @@
       align-items: flex-start;
     }
 
-    .wrap {
-      width: 100%;
-      max-width: 900px;
-    }
+    .wrap { width: 100%; max-width: 900px; }
 
-    /* Top bar */
     .topbar {
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(255,255,255,0.7);
@@ -38,11 +34,7 @@
       backdrop-filter: blur(8px);
     }
 
-    .brand {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+    .brand { display: flex; gap: 12px; align-items: center; }
 
     .logo {
       width: 40px;
@@ -52,18 +44,9 @@
       box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
     }
 
-    .brand h2 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-    }
+    .brand h2 { margin: 0; font-size: 18px; font-weight: 800; }
 
-    .sub {
-      margin: 2px 0 0;
-      font-size: 13px;
-      color: #4b5563;
-      font-weight: 600;
-    }
+    .sub { margin: 2px 0 0; font-size: 13px; color: #4b5563; font-weight: 600; }
 
     .chip {
       padding: 8px 10px;
@@ -76,7 +59,6 @@
       white-space: nowrap;
     }
 
-    /* Cards */
     .grid {
       margin-top: 16px;
       display: grid;
@@ -85,10 +67,7 @@
     }
 
     @media (min-width: 900px) {
-      .grid {
-        grid-template-columns: 1.1fr 0.9fr;
-        align-items: start;
-      }
+      .grid { grid-template-columns: 1.1fr 0.9fr; align-items: start; }
     }
 
     .card {
@@ -100,19 +79,10 @@
       backdrop-filter: blur(8px);
     }
 
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      font-weight: 900;
-    }
+    .card h3 { margin: 0 0 10px; font-size: 16px; font-weight: 900; }
 
-    .muted {
-      color: #6b7280;
-      font-size: 13px;
-      margin: 0 0 12px;
-    }
+    .muted { color: #6b7280; font-size: 13px; margin: 0 0 12px; }
 
-    /* Buttons */
     .btn {
       width: 100%;
       border: none;
@@ -125,37 +95,22 @@
       margin-top: 10px;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
-    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18); }
+    .btn:active { transform: translateY(0px); box-shadow: none; }
 
-    .btn:active {
-      transform: translateY(0px);
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
       box-shadow: none;
     }
 
-    .primary {
-      background: linear-gradient(135deg, #4f46e5, #9333ea);
-    }
+    .primary { background: linear-gradient(135deg, #4f46e5, #9333ea); }
+    .success { background: linear-gradient(135deg, #10b981, #059669); }
+    .warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .danger  { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
-    .success {
-      background: linear-gradient(135deg, #10b981, #059669);
-    }
-
-    .warning {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-    }
-
-    .danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-    }
-
-    #msg {
-      margin: 12px 0 0;
-      font-size: 14px;
-      font-weight: 700;
-    }
+    #msg { margin: 12px 0 0; font-size: 14px; font-weight: 700; }
 
     .note {
       margin-top: 12px;
@@ -168,7 +123,6 @@
 
 <body>
   <div class="wrap">
-    <!-- Top bar -->
     <div class="topbar">
       <div class="brand">
         <div class="logo"></div>
@@ -181,33 +135,28 @@
     </div>
 
     <div class="grid">
-      <!-- Actions -->
       <div class="card">
         <h3>Quick Actions</h3>
         <p class="muted">Use the buttons below to update your work status.</p>
 
-        <button class="btn success" onclick="clockIn()">Clock In</button>
-        <button class="btn warning" onclick="startBreak()">Break Start</button>
-        <button class="btn primary" onclick="endBreak()">Break End</button>
-        <button class="btn danger" onclick="logout()">Logout</button>
+        <button class="btn success" id="btnClockIn" onclick="clockIn()">Clock In</button>
+        <button class="btn warning" id="btnBreakStart" onclick="startBreak()">Break Start</button>
+        <button class="btn primary" id="btnBreakEnd" onclick="endBreak()">Break End</button>
+        <button class="btn danger" id="btnLogout" onclick="logout()">Logout</button>
 
         <p id="msg"></p>
       </div>
 
-      <!-- Status card -->
       <div class="card">
         <h3>Status</h3>
-        <p class="muted">
-          Your latest action result will appear here.
-        </p>
+        <p class="muted">Your latest action result will appear here.</p>
+
         <div style="padding:14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;">
           <div style="font-weight:900;color:#111827;margin-bottom:6px;">Last Message</div>
           <div id="statusBox" style="color:#374151;font-weight:600;">No action yet.</div>
         </div>
 
-        <p class="muted" style="margin-top:12px;">
-          Tip: Always click “Break End” after your break.
-        </p>
+        <p class="muted" style="margin-top:12px;">Tip: Always click “Break End” after your break.</p>
       </div>
     </div>
 
@@ -219,20 +168,28 @@
     const token = localStorage.getItem("token");
     const name = localStorage.getItem("employee_name");
     const role = localStorage.getItem("role");
-    // If not logged in, go back to login
-    if (!token) {
-      window.location.href = "login.html";
-    }
-    if (role !== "employee") {
-  window.location.href = "admin.html";
-}
+
+    if (!token) window.location.href = "login.html";
+    if (role !== "employee") window.location.href = "admin.html";
 
     document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
+
+    const buttons = [
+      document.getElementById("btnClockIn"),
+      document.getElementById("btnBreakStart"),
+      document.getElementById("btnBreakEnd"),
+      document.getElementById("btnLogout")
+    ];
+
+    function setBusy(isBusy) {
+      buttons.forEach(b => b.disabled = isBusy);
+    }
 
     async function callAPI(endpoint) {
       const msgEl = document.getElementById("msg");
       const statusBox = document.getElementById("statusBox");
 
+      setBusy(true);
       msgEl.style.color = "#111827";
       msgEl.innerText = "Processing...";
       statusBox.innerText = "Processing...";
@@ -252,38 +209,44 @@
           msgEl.style.color = "red";
           msgEl.innerText = data.message || "Request failed";
           statusBox.innerText = data.message || "Request failed";
-          return;
+          return { ok: false, data };
         }
 
         msgEl.style.color = "green";
         msgEl.innerText = data.message;
         statusBox.innerText = data.message;
+        return { ok: true, data };
 
       } catch (err) {
         msgEl.style.color = "red";
         msgEl.innerText = "Server error";
         statusBox.innerText = "Server error";
+        return { ok: false, error: err };
+      } finally {
+        setBusy(false);
       }
     }
 
-    function clockIn() {
-      callAPI("/api/time/clock-in");
-    }
+    function clockIn() { callAPI("/api/time/clock-in"); }
+    function startBreak() { callAPI("/api/time/break-start"); }
+    function endBreak() { callAPI("/api/time/break-end"); }
 
-    function startBreak() {
-      callAPI("/api/time/break-start");
-    }
+    async function logout() {
+      const msgEl = document.getElementById("msg");
+      const statusBox = document.getElementById("statusBox");
 
-    function endBreak() {
-      callAPI("/api/time/break-end");
-    }
+      setBusy(true);
+      msgEl.style.color = "#111827";
+      msgEl.innerText = "Logging out...";
+      statusBox.innerText = "Logging out...";
 
-    function logout() {
-      callAPI("/api/time/logout");
+      // ✅ Wait for server logout to complete (best practice)
+      await callAPI("/api/time/logout");
+
+      // ✅ Always clear local session after logout attempt
       localStorage.clear();
       window.location.href = "login.html";
     }
   </script>
 </body>
-</html> this is <employee-html>
-
+</html>
