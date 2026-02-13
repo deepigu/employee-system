@@ -300,6 +300,7 @@ Admin class="html
   </div>
 
   <script>
+    const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
     const adminName = localStorage.getItem("employee_name");
     document.getElementById("adminName").innerText = adminName || "Admin";
@@ -308,7 +309,9 @@ Admin class="html
     if (!token) {
       window.location.href = "login.html";
     }
-
+if (role !== "admin") {
+  window.location.href = "employee.html";
+}
     function logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
