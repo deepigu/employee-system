@@ -233,7 +233,19 @@
 
         <p id="addMsg"></p>
       </div>
+<!-- Delete Employee -->
+<div class="card">
+  <h3>Delete Employee</h3>
+  <p class="muted">Remove employee from system permanently.</p>
 
+  <input type="text" id="delete_employee_id" placeholder="Enter Employee ID" />
+
+  <div class="actions">
+    <button class="btn secondary" onclick="deleteEmployee()">Delete Employee</button>
+  </div>
+
+  <p id="deleteMsg"></p>
+</div>
       <!-- Logs -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
