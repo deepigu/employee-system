@@ -110,6 +110,13 @@
     .warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .danger  { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
+    /* Exit button style */
+    .secondary {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+    }
+
     #msg { margin: 12px 0 0; font-size: 14px; font-weight: 700; }
 
     .note {
@@ -128,7 +135,7 @@
         <div class="logo"></div>
         <div>
           <h2>Employee Dashboard</h2>
-          <p class="sub">Clock in, manage breaks, and logout</p>
+          <p class="sub">Clock in, manage breaks, and exit</p>
         </div>
       </div>
       <div class="chip" id="welcome"></div>
@@ -139,10 +146,15 @@
         <h3>Quick Actions</h3>
         <p class="muted">Use the buttons below to update your work status.</p>
 
-        <button class="btn success" id="btnClockIn" onclick="clockIn()">Clock In</button>
-        <button class="btn warning" id="btnBreakStart" onclick="startBreak()">Break Start</button>
-        <button class="btn primary" id="btnBreakEnd" onclick="endBreak()">Break End</button>
-        <button class="btn danger" id="btnLogout" onclick="logout()">Logout</button>
+        <button class="btn success" id="btnClockIn">Clock In</button>
+        <button class="btn warning" id="btnBreakStart">Break Start</button>
+        <button class="btn primary" id="btnBreakEnd">Break End</button>
+
+        <!-- ✅ Exit button (does NOT logout) -->
+        <button class="btn secondary" id="btnExit">Exit (Close App)</button>
+
+        <!-- Optional Logout (still available) -->
+        <button class="btn danger" id="btnLogout">Logout</button>
 
         <p id="msg"></p>
       </div>
@@ -156,7 +168,9 @@
           <div id="statusBox" style="color:#374151;font-weight:600;">No action yet.</div>
         </div>
 
-        <p class="muted" style="margin-top:12px;">Tip: Always click “Break End” after your break.</p>
+        <p class="muted" style="margin-top:12px;">
+          Tip: Always click “Break End” after your break.
+        </p>
       </div>
     </div>
 
@@ -174,22 +188,46 @@
 
     document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
 
-    const buttons = [
-      document.getElementById("btnClockIn"),
-      document.getElementById("btnBreakStart"),
-      document.getElementById("btnBreakEnd"),
-      document.getElementById("btnLogout")
-    ];
+    const msgEl = document.getElementById("msg");
+    const statusBox = document.getElementById("statusBox");
+
+    const btnClockIn = document.getElementById("btnClockIn");
+    const btnBreakStart = document.getElementById("btnBreakStart");
+    const btnBreakEnd = document.getElementById("btnBreakEnd");
+    const btnExit = document.getElementById("btnExit");
+    const btnLogout = document.getElementById("btnLogout");
+
+    const buttons = [btnClockIn, btnBreakStart, btnBreakEnd, btnExit, btnLogout];
 
     function setBusy(isBusy) {
       buttons.forEach(b => b.disabled = isBusy);
     }
 
-    async function callAPI(endpoint) {
-      const msgEl = document.getElementById("msg");
-      const statusBox = document.getElementById("statusBox");
+    // ----------------------------
+    // Auto exit reminder after 15 minutes
+    // ----------------------------
+    let exitTimer = null;
 
+    function startExitTimer() {
+      clearTimeout(exitTimer);
+      exitTimer = setTimeout(() => {
+        exitApp(true);
+      }, 15 * 60 * 1000); // 15 minutes
+    }
+
+    function afterAction() {
+      startExitTimer();
+    }
+
+    // Start timer when page loads
+    startExitTimer();
+
+    // ----------------------------
+    // API Call
+    // ----------------------------
+    async function callAPI(endpoint) {
       setBusy(true);
+
       msgEl.style.color = "#111827";
       msgEl.innerText = "Processing...";
       statusBox.innerText = "Processing...";
@@ -227,26 +265,62 @@
       }
     }
 
-    function clockIn() { callAPI("/api/time/clock-in"); }
-    function startBreak() { callAPI("/api/time/break-start"); }
-    function endBreak() { callAPI("/api/time/break-end"); }
+    // ----------------------------
+    // Actions
+    // ----------------------------
+    async function clockIn() {
+      await callAPI("/api/time/clock-in");
+      afterAction();
+    }
 
+    async function startBreak() {
+      await callAPI("/api/time/break-start");
+      afterAction();
+    }
+
+    async function endBreak() {
+      await callAPI("/api/time/break-end");
+      afterAction();
+    }
+
+    // ✅ Exit (does NOT logout)
+    function exitApp(fromAuto = false) {
+      msgEl.style.color = "#111827";
+      msgEl.innerText = fromAuto
+        ? "15 minutes passed. You can close the app now."
+        : "You can close the app now.";
+
+      statusBox.innerText = msgEl.innerText;
+
+      // Try to close (works in some installed PWAs / some browsers)
+      window.close();
+
+      // If blocked, give clear instructions
+      setTimeout(() => {
+        alert("To close the app: press Home (or swipe up). To fully close, open App Switcher and swipe the app away.");
+      }, 200);
+    }
+
+    // Logout (optional)
     async function logout() {
-      const msgEl = document.getElementById("msg");
-      const statusBox = document.getElementById("statusBox");
-
       setBusy(true);
       msgEl.style.color = "#111827";
       msgEl.innerText = "Logging out...";
       statusBox.innerText = "Logging out...";
 
-      // ✅ Wait for server logout to complete (best practice)
       await callAPI("/api/time/logout");
-
-      // ✅ Always clear local session after logout attempt
       localStorage.clear();
       window.location.href = "login.html";
     }
+
+    // ----------------------------
+    // Button wiring
+    // ----------------------------
+    btnClockIn.addEventListener("click", clockIn);
+    btnBreakStart.addEventListener("click", startBreak);
+    btnBreakEnd.addEventListener("click", endBreak);
+    btnExit.addEventListener("click", () => exitApp(false));
+    btnLogout.addEventListener("click", logout);
   </script>
 </body>
 </html>
