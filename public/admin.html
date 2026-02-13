@@ -207,47 +207,51 @@
       </div>
     </div>
 
+    <!-- ✅ NEW LAYOUT -->
     <div class="grid">
-      <!-- Add Employee -->
-      <div class="card">
-        <h3>Add New Employee</h3>
-        <p class="muted">Create employee/admin accounts securely.</p>
+      <!-- LEFT COLUMN: Add + Delete -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Add Employee -->
+        <div class="card">
+          <h3>Add New Employee</h3>
+          <p class="muted">Create employee/admin accounts securely.</p>
 
-        <div class="form-grid">
-          <input type="text" id="employee_id" placeholder="Employee ID" />
-          <input type="text" id="name" placeholder="Name" />
-          <input type="email" id="email" placeholder="Email" />
-          <input type="password" id="password" placeholder="Password" />
+          <div class="form-grid">
+            <input type="text" id="employee_id" placeholder="Employee ID" />
+            <input type="text" id="name" placeholder="Name" />
+            <input type="email" id="email" placeholder="Email" />
+            <input type="password" id="password" placeholder="Password" />
 
-          <select id="role">
-            <option value="employee">Employee</option>
-            <option value="admin">Admin</option>
-          </select>
+            <select id="role">
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="actions">
+            <button class="btn" onclick="addEmployee()">Add Employee</button>
+            <button class="btn secondary" onclick="clearForm()">Clear</button>
+          </div>
+
+          <p id="addMsg"></p>
         </div>
 
-        <div class="actions">
-          <button class="btn" onclick="addEmployee()">Add Employee</button>
-          <button class="btn secondary" onclick="clearForm()">Clear</button>
-        </div>
+        <!-- Delete Employee (BOTTOM) -->
+        <div class="card">
+          <h3>Delete Employee</h3>
+          <p class="muted">Remove employee from system permanently.</p>
 
-        <p id="addMsg"></p>
+          <input type="text" id="delete_employee_id" placeholder="Enter Employee ID" />
+
+          <div class="actions">
+            <button class="btn secondary" onclick="deleteEmployee()">Delete Employee</button>
+          </div>
+
+          <p id="deleteMsg"></p>
+        </div>
       </div>
 
-      <!-- Delete Employee -->
-      <div class="card">
-        <h3>Delete Employee</h3>
-        <p class="muted">Remove employee from system permanently.</p>
-
-        <input type="text" id="delete_employee_id" placeholder="Enter Employee ID" />
-
-        <div class="actions">
-          <button class="btn secondary" onclick="deleteEmployee()">Delete Employee</button>
-        </div>
-
-        <p id="deleteMsg"></p>
-      </div>
-
-      <!-- Logs -->
+      <!-- RIGHT COLUMN: Logs -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
           <div>
@@ -289,11 +293,10 @@
     const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
     const adminName = localStorage.getItem("employee_name");
-    const BASE_URL = window.location.origin; // ✅ safer than hardcoding
+    const BASE_URL = window.location.origin;
 
     document.getElementById("adminName").innerText = adminName || "Admin";
 
-    // Role protection
     if (!token) window.location.href = "login.html";
     if (role !== "admin") window.location.href = "employee.html";
 
@@ -361,7 +364,6 @@
       }
     }
 
-    // ✅ MISSING FUNCTION FIX: Delete Employee
     async function deleteEmployee() {
       const employeeId = document.getElementById("delete_employee_id").value.trim();
       const deleteMsg = document.getElementById("deleteMsg");
@@ -381,9 +383,7 @@
           BASE_URL + "/api/admin/employees/" + encodeURIComponent(employeeId),
           {
             method: "DELETE",
-            headers: {
-              "Authorization": "Bearer " + token
-            }
+            headers: { "Authorization": "Bearer " + token }
           }
         );
 
