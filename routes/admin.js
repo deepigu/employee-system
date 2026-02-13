@@ -25,6 +25,7 @@ function isAdmin(req, res, next) {
       return res.status(403).json({ message: "Forbidden - Not admin" });
     }
 
+    // Save admin employee_id from token
     req.employeeId = decoded.employee_id;
     next();
   } catch (err) {
@@ -91,5 +92,45 @@ router.post("/add-employee", isAdmin, (req, res) => {
     }
   );
 });
- 
+
+
+// ✅ NEW: Get all employees (Admin only)
+router.get("/employees", isAdmin, (req, res) => {
+  db.all(
+    `SELECT employee_id, name, email, role
+     FROM employees
+     ORDER BY employee_id ASC`,
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).json({ message: err.message });
+      res.json(rows || []);
+    }
+  );
+});
+
+
+// ✅ NEW: Delete an employee by employee_id (Admin only)
+router.delete("/employees/:employee_id", isAdmin, (req, res) => {
+  const { employee_id } = req.params;
+
+  // Optional safety: prevent admin deleting themselves
+  if (req.employeeId === employee_id) {
+    return res.status(400).json({ message: "You cannot delete your own account" });
+  }
+
+  db.run(
+    `DELETE FROM employees WHERE employee_id = ?`,
+    [employee_id],
+    function (err) {
+      if (err) return res.status(500).json({ message: err.message });
+
+      if (this.changes === 0) {
+        return res.status(404).json({ message: "Employee not found" });
+      }
+
+      res.json({ message: "Employee deleted successfully" });
+    }
+  );
+});
+
 module.exports = router;
