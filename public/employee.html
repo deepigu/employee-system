@@ -5,6 +5,10 @@
   <title>Employee Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- ✅ Font Awesome (icons) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
     * { box-sizing: border-box; }
 
@@ -20,10 +24,7 @@
       align-items: flex-start;
     }
 
-    .wrap {
-      width: 100%;
-      max-width: 900px;
-    }
+    .wrap { width: 100%; max-width: 900px; }
 
     /* Top bar */
     .topbar {
@@ -38,11 +39,7 @@
       backdrop-filter: blur(8px);
     }
 
-    .brand {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+    .brand { display: flex; gap: 12px; align-items: center; }
 
     .logo {
       width: 40px;
@@ -52,18 +49,8 @@
       box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
     }
 
-    .brand h2 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .sub {
-      margin: 2px 0 0;
-      font-size: 13px;
-      color: #4b5563;
-      font-weight: 600;
-    }
+    .brand h2 { margin: 0; font-size: 18px; font-weight: 800; }
+    .sub { margin: 2px 0 0; font-size: 13px; color: #4b5563; font-weight: 600; }
 
     .chip {
       padding: 8px 10px;
@@ -76,26 +63,57 @@
       white-space: nowrap;
     }
 
-    /* ✅ Exit button */
-    .exit-btn {
-      width: 34px;
-      height: 34px;
+    /* ✅ Icon Button (Exit) */
+    .icon-btn {
+      width: 38px;
+      height: 38px;
       border: none;
-      border-radius: 10px;
-      background: #ef4444;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 900;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
       cursor: pointer;
-      transition: 0.2s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      position: relative;
+      outline: none;
     }
 
-    .exit-btn:hover {
-      background: #dc2626;
-      transform: scale(1.06);
+    .icon-btn:hover {
+      background: rgba(239, 68, 68, 0.18);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.10);
+    }
+
+    .icon-btn:active {
+      transform: translateY(0px);
+      box-shadow: none;
+    }
+
+    /* ✅ Tooltip */
+    .icon-btn[data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      right: 0;
+      top: 110%;
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+      transition: opacity .15s ease, transform .15s ease;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+    }
+
+    .icon-btn:hover::after {
+      opacity: 1;
+      transform: translateY(0px);
     }
 
     /* Cards */
@@ -107,10 +125,7 @@
     }
 
     @media (min-width: 900px) {
-      .grid {
-        grid-template-columns: 1.1fr 0.9fr;
-        align-items: start;
-      }
+      .grid { grid-template-columns: 1.1fr 0.9fr; align-items: start; }
     }
 
     .card {
@@ -122,17 +137,8 @@
       backdrop-filter: blur(8px);
     }
 
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 16px;
-      font-weight: 900;
-    }
-
-    .muted {
-      color: #6b7280;
-      font-size: 13px;
-      margin: 0 0 12px;
-    }
+    .card h3 { margin: 0 0 10px; font-size: 16px; font-weight: 900; }
+    .muted { color: #6b7280; font-size: 13px; margin: 0 0 12px; }
 
     /* Buttons */
     .btn {
@@ -152,11 +158,7 @@
       box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
     }
 
-    .btn:active {
-      transform: translateY(0px);
-      box-shadow: none;
-    }
-
+    .btn:active { transform: translateY(0px); box-shadow: none; }
     .btn:disabled { cursor: not-allowed; opacity: 0.75; transform: none; box-shadow: none; }
 
     .primary { background: linear-gradient(135deg, #4f46e5, #9333ea); }
@@ -164,20 +166,10 @@
     .warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
     .danger  { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
-    #msg {
-      margin: 12px 0 0;
-      font-size: 14px;
-      font-weight: 700;
-    }
+    #msg { margin: 12px 0 0; font-size: 14px; font-weight: 700; }
+    .note { margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.85); text-align: center; }
 
-    .note {
-      margin-top: 12px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.85);
-      text-align: center;
-    }
-
-    /* Inputs for change password */
+    /* Inputs */
     .form-grid { display: grid; gap: 10px; }
     .form-grid input {
       width: 100%;
@@ -215,7 +207,6 @@
   <div id="toast"></div>
 
   <div class="wrap">
-    <!-- Top bar -->
     <div class="topbar">
       <div class="brand">
         <div class="logo"></div>
@@ -225,15 +216,19 @@
         </div>
       </div>
 
-      <!-- ✅ Right side: Welcome chip + Exit icon -->
       <div style="display:flex; gap:10px; align-items:center;">
         <div class="chip" id="welcome"></div>
-        <button class="exit-btn" onclick="exitPage()" title="Exit">✕</button>
+
+        <!-- ✅ Professional exit icon button -->
+        <button class="icon-btn"
+                onclick="exitPage()"
+                data-tooltip="Exit to Login">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
       </div>
     </div>
 
     <div class="grid">
-      <!-- Actions -->
       <div class="card">
         <h3>Quick Actions</h3>
         <p class="muted">Use the buttons below to update your work status.</p>
@@ -246,7 +241,6 @@
         <p id="msg"></p>
       </div>
 
-      <!-- Status + Change Password -->
       <div style="display:flex; flex-direction:column; gap:16px;">
         <div class="card">
           <h3>Status</h3>
@@ -262,7 +256,6 @@
           </p>
         </div>
 
-        <!-- Change Password -->
         <div class="card">
           <h3>Change Password</h3>
           <p class="muted">Update your password securely.</p>
@@ -353,7 +346,6 @@
     function startBreak() { callAPI("/api/time/break-start"); }
     function endBreak() { callAPI("/api/time/break-end"); }
 
-    // Logout button (calls API then clears storage)
     async function logoutNow() {
       try {
         await callAPI("/api/time/logout");
@@ -365,12 +357,11 @@
 
     // ✅ Exit icon button (quick exit)
     function exitPage() {
-      if (!confirm("Are you sure you want to exit?")) return;
+      if (!confirm("Exit to login?")) return;
       localStorage.clear();
       window.location.href = "login.html";
     }
 
-    // Change Password
     async function changePassword() {
       const oldPassword = document.getElementById("oldPass").value.trim();
       const newPassword = document.getElementById("newPass").value.trim();
