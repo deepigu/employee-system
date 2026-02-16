@@ -128,7 +128,7 @@
 
     .actions { display: flex; gap: 10px; margin-top: 10px; }
 
-    #addMsg, #deleteMsg { margin: 10px 0 0; font-size: 14px; font-weight: 600; }
+    #addMsg, #deleteMsg { margin: 10px 0 0; font-size: 14px; font-weight: 700; }
 
     .table-wrap {
       overflow: auto;
@@ -181,6 +181,20 @@
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
     }
 
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      font-weight: 900;
+      color: #0f172a;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
     .note {
       margin-top: 12px;
       font-size: 12px;
@@ -207,9 +221,8 @@
       </div>
     </div>
 
-    <!-- ✅ NEW LAYOUT -->
     <div class="grid">
-      <!-- LEFT COLUMN: Add + Delete -->
+      <!-- LEFT COLUMN -->
       <div style="display:flex; flex-direction:column; gap:16px;">
         <!-- Add Employee -->
         <div class="card">
@@ -236,7 +249,7 @@
           <p id="addMsg"></p>
         </div>
 
-        <!-- Delete Employee (BOTTOM) -->
+        <!-- Delete Employee -->
         <div class="card">
           <h3>Delete Employee</h3>
           <p class="muted">Remove employee from system permanently.</p>
@@ -251,37 +264,76 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: Logs -->
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
-          <div>
-            <h3 style="margin:0;">Employee Logs</h3>
-            <p class="muted">Track login/logout events in real time.</p>
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Employees -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+            <div>
+              <h3 style="margin:0;">Employees</h3>
+              <p class="muted">Total employees and recently added accounts.</p>
+            </div>
+            <div class="pill">Total: <span id="empCount">0</span></div>
           </div>
-          <button class="btn" onclick="fetchLogs()">Refresh Logs</button>
+
+          <div class="search-row">
+            <input
+              type="text"
+              id="empSearch"
+              placeholder="Search employees (id, name, email, role...)"
+              oninput="filterEmployees()"
+            />
+            <button class="btn secondary" onclick="clearEmpSearch()">Clear</button>
+            <button class="btn" onclick="fetchEmployees()">Refresh</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="employeesTable">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="search-row">
-          <input
-            type="text"
-            id="logSearch"
-            placeholder="Search logs (employee id, action, time...)"
-            oninput="filterLogs()"
-          />
-          <button class="btn secondary" onclick="clearSearch()">Clear</button>
-        </div>
+        <!-- Logs -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+            <div>
+              <h3 style="margin:0;">Employee Logs</h3>
+              <p class="muted">Track login/logout events in real time.</p>
+            </div>
+            <button class="btn" onclick="fetchLogs()">Refresh Logs</button>
+          </div>
 
-        <div class="table-wrap">
-          <table id="logsTable">
-            <thead>
-              <tr>
-                <th>Employee ID</th>
-                <th>Action</th>
-                <th>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div class="search-row">
+            <input
+              type="text"
+              id="logSearch"
+              placeholder="Search logs (employee id, action, time...)"
+              oninput="filterLogs()"
+            />
+            <button class="btn secondary" onclick="clearSearch()">Clear</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="logsTable">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Action</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -301,6 +353,7 @@
     if (role !== "admin") window.location.href = "employee.html";
 
     let allLogs = [];
+    let allEmployees = [];
 
     function logout() {
       localStorage.removeItem("token");
@@ -319,19 +372,26 @@
       document.getElementById("addMsg").innerText = "";
     }
 
+    function setMsg(el, text, ok) {
+      el.innerText = text || "";
+      el.style.color = ok ? "green" : "red";
+    }
+
+    // -----------------------
+    // ADD EMPLOYEE
+    // -----------------------
     async function addEmployee() {
       const id = document.getElementById("employee_id").value.trim();
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const role = document.getElementById("role").value;
+      const roleValue = document.getElementById("role").value;
 
       const addMsg = document.getElementById("addMsg");
-      addMsg.innerText = "";
-      addMsg.style.color = "red";
+      setMsg(addMsg, "", false);
 
-      if (!id || !name || !email || !password || !role) {
-        addMsg.innerText = "All fields are required";
+      if (!id || !name || !email || !password || !roleValue) {
+        setMsg(addMsg, "All fields are required", false);
         return;
       }
 
@@ -342,37 +402,41 @@
             "Content-Type": "application/json",
             "Authorization": "Bearer " + token
           },
-          body: JSON.stringify({ employee_id: id, name, email, password, role })
+          body: JSON.stringify({ employee_id: id, name, email, password, role: roleValue })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-          addMsg.style.color = "red";
-          addMsg.innerText = data.message || "Failed to add employee";
+          setMsg(addMsg, data.message || "Failed to add employee", false);
           return;
         }
 
-        addMsg.style.color = "green";
-        addMsg.innerText = "Employee added successfully";
+        // ✅ show backend message (supports your updated API)
+        setMsg(addMsg, data.message || "✅ New employee added successfully", true);
+
         clearForm();
+
+        // Refresh employees count/list
+        fetchEmployees();
 
       } catch (error) {
         console.error(error);
-        addMsg.style.color = "red";
-        addMsg.innerText = "Cannot connect to server";
+        setMsg(addMsg, "Cannot connect to server", false);
       }
     }
 
+    // -----------------------
+    // DELETE EMPLOYEE
+    // -----------------------
     async function deleteEmployee() {
       const employeeId = document.getElementById("delete_employee_id").value.trim();
       const deleteMsg = document.getElementById("deleteMsg");
 
-      deleteMsg.innerText = "";
-      deleteMsg.style.color = "red";
+      setMsg(deleteMsg, "", false);
 
       if (!employeeId) {
-        deleteMsg.innerText = "Employee ID is required";
+        setMsg(deleteMsg, "Employee ID is required", false);
         return;
       }
 
@@ -390,20 +454,103 @@
         const data = await res.json();
 
         if (!res.ok) {
-          deleteMsg.innerText = data.message || "Delete failed";
+          setMsg(deleteMsg, data.message || "Delete failed", false);
           return;
         }
 
-        deleteMsg.style.color = "green";
-        deleteMsg.innerText = "Employee deleted successfully";
+        setMsg(deleteMsg, data.message || "Employee deleted successfully", true);
         document.getElementById("delete_employee_id").value = "";
+
+        // Refresh employees count/list
+        fetchEmployees();
 
       } catch (error) {
         console.error(error);
-        deleteMsg.innerText = "Cannot connect to server";
+        setMsg(deleteMsg, "Cannot connect to server", false);
       }
     }
 
+    // -----------------------
+    // EMPLOYEES LIST + COUNT
+    // -----------------------
+    function renderEmployees(list) {
+      const tbody = document.querySelector("#employeesTable tbody");
+      const countEl = document.getElementById("empCount");
+
+      tbody.innerHTML = "";
+      countEl.innerText = (list || []).length;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">No employees found</td></tr>`;
+        return;
+      }
+
+      list.forEach(emp => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${emp.employee_id || ""}</td>
+          <td>${emp.name || ""}</td>
+          <td>${emp.email || ""}</td>
+          <td>${emp.role || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterEmployees() {
+      const q = (document.getElementById("empSearch").value || "").toLowerCase().trim();
+      if (!q) return renderEmployees(allEmployees);
+
+      const filtered = allEmployees.filter(emp => {
+        const text = `${emp.employee_id} ${emp.name} ${emp.email} ${emp.role}`.toLowerCase();
+        return text.includes(q);
+      });
+
+      renderEmployees(filtered);
+    }
+
+    function clearEmpSearch() {
+      document.getElementById("empSearch").value = "";
+      renderEmployees(allEmployees);
+    }
+
+    async function fetchEmployees() {
+      const tbody = document.querySelector("#employeesTable tbody");
+      tbody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
+
+      try {
+        const response = await fetch(BASE_URL + "/api/admin/employees", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          tbody.innerHTML = `<tr><td colspan="4">Error: ${data.message || "Failed"}</td></tr>`;
+          document.getElementById("empCount").innerText = "0";
+          allEmployees = [];
+          return;
+        }
+
+        // supports both formats:
+        // 1) old: [ ...rows ]
+        // 2) new: { success, totalEmployees, employees: [...] }
+        const list = Array.isArray(data) ? data : (data.employees || []);
+        allEmployees = list;
+        renderEmployees(allEmployees);
+        filterEmployees();
+
+      } catch (error) {
+        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="4">Cannot connect to server</td></tr>`;
+        document.getElementById("empCount").innerText = "0";
+        allEmployees = [];
+      }
+    }
+
+    // -----------------------
+    // LOGS
+    // -----------------------
     function renderLogs(logs) {
       const tbody = document.querySelector("#logsTable tbody");
       tbody.innerHTML = "";
@@ -450,6 +597,7 @@
 
         if (!response.ok) {
           tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message}</td></tr>`;
+          allLogs = [];
           return;
         }
 
@@ -460,9 +608,12 @@
       } catch (error) {
         console.error(error);
         tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
+        allLogs = [];
       }
     }
 
+    // Initial loads
+    fetchEmployees();
     fetchLogs();
   </script>
 </body>
