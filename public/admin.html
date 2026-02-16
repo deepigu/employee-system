@@ -7,7 +7,6 @@
 
   <style>
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
@@ -16,7 +15,6 @@
       padding: 22px;
       color: #111827;
     }
-
     .wrap { max-width: 1100px; margin: 0 auto; }
 
     .topbar {
@@ -30,162 +28,42 @@
       box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
       backdrop-filter: blur(8px);
     }
-
     .brand { display: flex; gap: 12px; align-items: center; }
-
     .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 40px; height: 40px; border-radius: 12px;
       background: linear-gradient(135deg, #4f46e5, #9333ea);
       box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
     }
-
     .brand h2 { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.2px; }
     .sub { margin: 2px 0 0; font-size: 13px; color: #4b5563; font-weight: 600; }
 
     .right { display: flex; gap: 10px; align-items: center; }
-
     .chip {
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #3730a3;
-      font-weight: 700;
-      font-size: 13px;
-      border: 1px solid #e0e7ff;
-      white-space: nowrap;
+      padding: 8px 10px; border-radius: 999px;
+      background: #eef2ff; color: #3730a3;
+      font-weight: 700; font-size: 13px;
+      border: 1px solid #e0e7ff; white-space: nowrap;
     }
 
     .btn {
-      border: none;
-      cursor: pointer;
-      font-weight: 800;
-      border-radius: 10px;
-      padding: 10px 12px;
+      border: none; cursor: pointer; font-weight: 800;
+      border-radius: 10px; padding: 10px 12px;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
       background: linear-gradient(135deg, #4f46e5, #9333ea);
       color: #fff;
     }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.35);
-    }
-
-    .btn.secondary {
-      background: #ffffff;
-      color: #111827;
-      border: 1px solid #e5e7eb;
-      box-shadow: none;
-    }
-
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 22px rgba(79, 70, 229, 0.35); }
+    .btn.secondary { background: #ffffff; color: #111827; border: 1px solid #e5e7eb; box-shadow: none; }
     .btn.secondary:hover { box-shadow: 0 10px 18px rgba(0,0,0,0.08); }
 
-    .grid {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    @media (min-width: 900px) {
-      .grid { grid-template-columns: 420px 1fr; align-items: start; }
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid rgba(255,255,255,0.7);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
-      backdrop-filter: blur(8px);
-    }
-
-    .card h3 { margin: 0 0 12px; font-size: 16px; font-weight: 900; }
-
-    .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-
-    .form-grid input,
-    .form-grid select,
-    #delete_employee_id {
-      width: 100%;
-      padding: 12px 12px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      outline: none;
-      font-size: 14px;
-      background: #fff;
-      transition: 0.2s ease;
-    }
-
-    .form-grid input:focus,
-    .form-grid select:focus,
-    #delete_employee_id:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
-    }
-
-    .actions { display: flex; gap: 10px; margin-top: 10px; }
-    #addMsg, #deleteMsg { margin: 10px 0 0; font-size: 14px; font-weight: 700; }
-
-    .table-wrap {
-      overflow: auto;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      margin-top: 12px;
-    }
-
-    table { border-collapse: collapse; width: 100%; min-width: 560px; }
-
-    th, td {
-      padding: 12px 12px;
-      text-align: left;
-      border-bottom: 1px solid #eef2f7;
-      font-size: 14px;
-    }
-
-    th { background: #f8fafc; color: #111827; font-weight: 900; }
-    tr:hover td { background: #f9fafb; }
-
-    .muted { color: #6b7280; font-size: 13px; margin: 6px 0 0; }
-
-    .search-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
-
-    .search-row input {
-      flex: 1;
-      min-width: 220px;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      outline: none;
-      font-size: 14px;
-      background: #fff;
-      transition: 0.2s ease;
-    }
-
-    .search-row input:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
-    }
-
-    /* ✅ Stats cards */
+    /* Stats */
     .stats {
+      margin-top: 16px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      margin-bottom: 16px;
     }
-    @media (max-width: 980px) {
-      .stats { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 980px) { .stats { grid-template-columns: repeat(2, 1fr); } }
     .stat {
       background: rgba(255,255,255,0.94);
       border: 1px solid rgba(255,255,255,0.7);
@@ -197,14 +75,48 @@
     .stat .label { color:#6b7280; font-weight:800; font-size:12px; }
     .stat .value { font-size:22px; font-weight:1000; margin-top:6px; color:#0f172a; }
 
-    .badge {
-      display:inline-flex;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 900;
-      font-size: 12px;
-      border: 1px solid #e5e7eb;
+    .grid { margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 420px 1fr; align-items: start; } }
+
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(8px);
     }
+    .card h3 { margin: 0 0 12px; font-size: 16px; font-weight: 900; }
+    .muted { color: #6b7280; font-size: 13px; margin: 6px 0 0; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .form-grid input, .form-grid select, #delete_employee_id {
+      width: 100%; padding: 12px 12px; border-radius: 10px;
+      border: 1px solid #d1d5db; outline: none; font-size: 14px;
+      background: #fff; transition: 0.2s ease;
+    }
+    .form-grid input:focus, .form-grid select:focus, #delete_employee_id:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
+    }
+    .actions { display: flex; gap: 10px; margin-top: 10px; }
+    #addMsg, #deleteMsg { margin: 10px 0 0; font-size: 14px; font-weight: 700; }
+
+    .search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+    .search-row input {
+      flex: 1; min-width: 220px; padding: 12px;
+      border-radius: 10px; border: 1px solid #d1d5db;
+      outline: none; font-size: 14px; background: #fff; transition: 0.2s ease;
+    }
+    .search-row input:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18); }
+
+    .table-wrap { overflow: auto; border-radius: 12px; border: 1px solid #e5e7eb; background: #fff; margin-top: 12px; }
+    table { border-collapse: collapse; width: 100%; min-width: 560px; }
+    th, td { padding: 12px 12px; text-align: left; border-bottom: 1px solid #eef2f7; font-size: 14px; }
+    th { background: #f8fafc; color: #111827; font-weight: 900; }
+    tr:hover td { background: #f9fafb; }
+
+    .badge { display:inline-flex; padding: 6px 10px; border-radius: 999px; font-weight: 900; font-size: 12px; border: 1px solid #e5e7eb; }
     .b-working { background:#ecfdf5; color:#047857; border-color:#a7f3d0; }
     .b-break   { background:#fffbeb; color:#b45309; border-color:#fde68a; }
     .b-out     { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
@@ -231,8 +143,8 @@
       </div>
     </div>
 
-    <!-- ✅ Stats row -->
-    <div class="stats" style="margin-top:16px;">
+    <!-- Stats -->
+    <div class="stats">
       <div class="stat">
         <div class="label">Total Employees</div>
         <div class="value" id="statTotalEmployees">0</div>
@@ -247,14 +159,13 @@
       </div>
       <div class="stat">
         <div class="label">On Break Now</div>
-        <div class="value" id="statOnBreak">0</div>
+        <div class="value" id="statOnBreakNow">0</div>
       </div>
     </div>
 
     <div class="grid">
-      <!-- LEFT COLUMN -->
+      <!-- LEFT -->
       <div style="display:flex; flex-direction:column; gap:16px;">
-        <!-- Add Employee -->
         <div class="card">
           <h3>Add New Employee</h3>
           <p class="muted">Create employee/admin accounts securely.</p>
@@ -274,25 +185,20 @@
             <button class="btn" onclick="addEmployee()">Add Employee</button>
             <button class="btn secondary" onclick="clearForm()">Clear</button>
           </div>
-
           <p id="addMsg"></p>
         </div>
 
-        <!-- Delete Employee -->
         <div class="card">
           <h3>Delete Employee</h3>
           <p class="muted">Remove employee from system permanently.</p>
 
           <input type="text" id="delete_employee_id" placeholder="Enter Employee ID" />
-
           <div class="actions">
             <button class="btn secondary" onclick="deleteEmployee()">Delete Employee</button>
           </div>
-
           <p id="deleteMsg"></p>
         </div>
 
-        <!-- Live Status -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
             <div>
@@ -303,7 +209,7 @@
           </div>
 
           <div class="table-wrap">
-            <table id="liveTable" style="min-width:560px;">
+            <table id="liveTable">
               <thead>
                 <tr>
                   <th>Employee</th>
@@ -317,20 +223,19 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN -->
+      <!-- RIGHT -->
       <div style="display:flex; flex-direction:column; gap:16px;">
-        <!-- Employees -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
             <div>
               <h3 style="margin:0;">Employees</h3>
-              <p class="muted">Total employees and recently added accounts.</p>
+              <p class="muted">Manage all accounts.</p>
             </div>
             <div class="chip">Total: <span id="empCount">0</span></div>
           </div>
 
           <div class="search-row">
-            <input type="text" id="empSearch" placeholder="Search employees (id, name, email, role...)" oninput="filterEmployees()" />
+            <input type="text" id="empSearch" placeholder="Search employees..." oninput="filterEmployees()" />
             <button class="btn secondary" onclick="clearEmpSearch()">Clear</button>
             <button class="btn" onclick="fetchEmployees()">Refresh</button>
           </div>
@@ -350,18 +255,17 @@
           </div>
         </div>
 
-        <!-- Logs -->
         <div class="card">
           <div style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
             <div>
               <h3 style="margin:0;">Employee Logs</h3>
-              <p class="muted">Track login/logout events in real time.</p>
+              <p class="muted">Track login/logout/break events.</p>
             </div>
             <button class="btn" onclick="fetchLogs()">Refresh Logs</button>
           </div>
 
           <div class="search-row">
-            <input type="text" id="logSearch" placeholder="Search logs (employee id, action, time...)" oninput="filterLogs()" />
+            <input type="text" id="logSearch" placeholder="Search logs..." oninput="filterLogs()" />
             <button class="btn secondary" onclick="clearSearch()">Clear</button>
           </div>
 
@@ -385,27 +289,28 @@
   </div>
 
   <script>
-    const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
     const adminName = localStorage.getItem("employee_name");
 
-    // ✅ Works in local + render
-    const ORIGIN = window.location.origin;
-    const BASE_URL = (!ORIGIN || ORIGIN === "null")
-      ? "https://employee-system-84mh.onrender.com"
-      : ORIGIN;
+    // ✅ IMPORTANT: Force SAME API server as employee page
+    const BASE_URL = "https://employee-system-84mh.onrender.com";
 
     document.getElementById("adminName").innerText = adminName || "Admin";
-
     if (!token) window.location.href = "login.html";
     if (role !== "admin") window.location.href = "employee.html";
 
-    let allLogs = [];
     let allEmployees = [];
+    let allLogs = [];
 
     function logout() {
       localStorage.clear();
       window.location.href = "login.html";
+    }
+
+    function setMsg(el, text, ok) {
+      el.innerText = text || "";
+      el.style.color = ok ? "green" : "red";
     }
 
     function clearForm() {
@@ -417,14 +322,7 @@
       document.getElementById("addMsg").innerText = "";
     }
 
-    function setMsg(el, text, ok) {
-      el.innerText = text || "";
-      el.style.color = ok ? "green" : "red";
-    }
-
-    // -----------------------
-    // ✅ STATS
-    // -----------------------
+    // ✅ Stats
     async function fetchStats() {
       try {
         const res = await fetch(BASE_URL + "/api/admin/stats/today", {
@@ -436,30 +334,28 @@
         document.getElementById("statTotalEmployees").innerText = data.totalEmployees ?? 0;
         document.getElementById("statTodayLogins").innerText = data.todayLogins ?? 0;
         document.getElementById("statTodayLogouts").innerText = data.todayLogouts ?? 0;
-        document.getElementById("statOnBreak").innerText = data.onBreak ?? 0;
+        document.getElementById("statOnBreakNow").innerText = data.onBreakNow ?? 0;
       } catch (e) {}
     }
 
-    // -----------------------
-    // ADD EMPLOYEE
-    // -----------------------
+    // ✅ Add employee
     async function addEmployee() {
       const id = document.getElementById("employee_id").value.trim();
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       const roleValue = document.getElementById("role").value;
+      const msg = document.getElementById("addMsg");
 
-      const addMsg = document.getElementById("addMsg");
-      setMsg(addMsg, "", false);
+      setMsg(msg, "", false);
 
       if (!id || !name || !email || !password || !roleValue) {
-        setMsg(addMsg, "All fields are required", false);
+        setMsg(msg, "All fields are required", false);
         return;
       }
 
       try {
-        const response = await fetch(BASE_URL + "/api/admin/add-employee", {
+        const res = await fetch(BASE_URL + "/api/admin/add-employee", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -468,39 +364,31 @@
           body: JSON.stringify({ employee_id: id, name, email, password, role: roleValue })
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          setMsg(addMsg, data.message || "Failed to add employee", false);
+        const data = await res.json();
+        if (!res.ok) {
+          setMsg(msg, data.message || "Failed to add employee", false);
           return;
         }
 
-        setMsg(addMsg, data.message || "✅ New employee added successfully", true);
+        setMsg(msg, data.message || "✅ Employee added", true);
         clearForm();
-
-        // ✅ Auto refresh everything
         await refreshAll();
-
-      } catch (error) {
-        setMsg(addMsg, "Cannot connect to server", false);
+      } catch (e) {
+        setMsg(msg, "Cannot connect to server", false);
       }
     }
 
-    // -----------------------
-    // DELETE EMPLOYEE
-    // -----------------------
+    // ✅ Delete employee
     async function deleteEmployee() {
       const employeeId = document.getElementById("delete_employee_id").value.trim();
-      const deleteMsg = document.getElementById("deleteMsg");
-
-      setMsg(deleteMsg, "", false);
+      const msg = document.getElementById("deleteMsg");
+      setMsg(msg, "", false);
 
       if (!employeeId) {
-        setMsg(deleteMsg, "Employee ID is required", false);
+        setMsg(msg, "Employee ID is required", false);
         return;
       }
-
-      if (!confirm("Are you sure you want to delete employee: " + employeeId + " ?")) return;
+      if (!confirm("Delete employee: " + employeeId + " ?")) return;
 
       try {
         const res = await fetch(BASE_URL + "/api/admin/employees/" + encodeURIComponent(employeeId), {
@@ -509,32 +397,26 @@
         });
 
         const data = await res.json();
-
         if (!res.ok) {
-          setMsg(deleteMsg, data.message || "Delete failed", false);
+          setMsg(msg, data.message || "Delete failed", false);
           return;
         }
 
-        setMsg(deleteMsg, data.message || "Employee deleted successfully", true);
+        setMsg(msg, data.message || "✅ Deleted", true);
         document.getElementById("delete_employee_id").value = "";
-
-        // ✅ Auto refresh everything
         await refreshAll();
-
-      } catch (error) {
-        setMsg(deleteMsg, "Cannot connect to server", false);
+      } catch (e) {
+        setMsg(msg, "Cannot connect to server", false);
       }
     }
 
-    // -----------------------
-    // EMPLOYEES
-    // -----------------------
+    // Employees
     function renderEmployees(list) {
       const tbody = document.querySelector("#employeesTable tbody");
       document.getElementById("empCount").innerText = (list || []).length;
-
       tbody.innerHTML = "";
-      if (!list || list.length === 0) {
+
+      if (!list || !list.length) {
         tbody.innerHTML = `<tr><td colspan="4">No employees found</td></tr>`;
         return;
       }
@@ -555,12 +437,9 @@
       const q = (document.getElementById("empSearch").value || "").toLowerCase().trim();
       if (!q) return renderEmployees(allEmployees);
 
-      const filtered = allEmployees.filter(emp => {
-        const text = `${emp.employee_id} ${emp.name} ${emp.email} ${emp.role}`.toLowerCase();
-        return text.includes(q);
-      });
-
-      renderEmployees(filtered);
+      renderEmployees(allEmployees.filter(emp =>
+        (`${emp.employee_id} ${emp.name} ${emp.email} ${emp.role}`).toLowerCase().includes(q)
+      ));
     }
 
     function clearEmpSearch() {
@@ -573,45 +452,39 @@
       tbody.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
 
       try {
-        const response = await fetch(BASE_URL + "/api/admin/employees", {
+        const res = await fetch(BASE_URL + "/api/admin/employees", {
           headers: { "Authorization": "Bearer " + token }
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
+        const data = await res.json();
+        if (!res.ok) {
           tbody.innerHTML = `<tr><td colspan="4">Error: ${data.message || "Failed"}</td></tr>`;
           allEmployees = [];
-          document.getElementById("empCount").innerText = "0";
           return;
         }
 
         allEmployees = data.employees || [];
         renderEmployees(allEmployees);
         filterEmployees();
-
-      } catch (error) {
+      } catch (e) {
         tbody.innerHTML = `<tr><td colspan="4">Cannot connect to server</td></tr>`;
         allEmployees = [];
-        document.getElementById("empCount").innerText = "0";
       }
     }
 
-    // -----------------------
-    // LOGS
-    // -----------------------
-    function renderLogs(logs) {
+    // Logs
+    function renderLogs(list) {
       const tbody = document.querySelector("#logsTable tbody");
       tbody.innerHTML = "";
 
-      if (!logs || logs.length === 0) {
+      if (!list || !list.length) {
         tbody.innerHTML = `<tr><td colspan="3">No logs found</td></tr>`;
         return;
       }
 
-      logs.forEach(log => {
+      list.forEach(l => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${log.employee_id}</td><td>${log.action}</td><td>${log.timestamp}</td>`;
+        tr.innerHTML = `<td>${l.employee_id}</td><td>${l.action}</td><td>${l.timestamp}</td>`;
         tbody.appendChild(tr);
       });
     }
@@ -620,12 +493,9 @@
       const q = (document.getElementById("logSearch").value || "").toLowerCase().trim();
       if (!q) return renderLogs(allLogs);
 
-      const filtered = allLogs.filter(log => {
-        const text = `${log.employee_id} ${log.action} ${log.timestamp}`.toLowerCase();
-        return text.includes(q);
-      });
-
-      renderLogs(filtered);
+      renderLogs(allLogs.filter(l =>
+        (`${l.employee_id} ${l.action} ${l.timestamp}`).toLowerCase().includes(q)
+      ));
     }
 
     function clearSearch() {
@@ -638,14 +508,13 @@
       tbody.innerHTML = `<tr><td colspan="3">Loading...</td></tr>`;
 
       try {
-        const response = await fetch(BASE_URL + "/api/admin/logs", {
+        const res = await fetch(BASE_URL + "/api/admin/logs", {
           headers: { "Authorization": "Bearer " + token }
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message}</td></tr>`;
+        const data = await res.json();
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message || "Failed"}</td></tr>`;
           allLogs = [];
           return;
         }
@@ -653,16 +522,13 @@
         allLogs = Array.isArray(data) ? data : [];
         renderLogs(allLogs);
         filterLogs();
-
-      } catch (error) {
+      } catch (e) {
         tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
         allLogs = [];
       }
     }
 
-    // -----------------------
-    // LIVE STATUS
-    // -----------------------
+    // Live status
     function badge(status) {
       if (status === "Working") return `<span class="badge b-working">Working</span>`;
       if (status === "On Break") return `<span class="badge b-break">On Break</span>`;
@@ -678,6 +544,7 @@
         const res = await fetch(BASE_URL + "/api/admin/live-status", {
           headers: { "Authorization": "Bearer " + token }
         });
+
         const data = await res.json();
         if (!res.ok) {
           tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message || "Failed"}</td></tr>`;
@@ -686,7 +553,6 @@
 
         const list = data.employees || [];
         tbody.innerHTML = "";
-
         if (!list.length) {
           tbody.innerHTML = `<tr><td colspan="3">No employees found</td></tr>`;
           return;
@@ -701,13 +567,11 @@
           `;
           tbody.appendChild(tr);
         });
-
       } catch (e) {
         tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
       }
     }
 
-    // ✅ refresh everything
     async function refreshAll() {
       await fetchEmployees();
       await fetchStats();
@@ -715,10 +579,10 @@
       await fetchLogs();
     }
 
-    // Initial loads
+    // ✅ initial load
     refreshAll();
 
-    // ✅ Auto refresh every 10 seconds (professional)
+    // ✅ auto-refresh stats + live status every 10 sec
     setInterval(() => {
       fetchStats();
       fetchLiveStatus();
