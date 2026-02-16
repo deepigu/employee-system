@@ -164,6 +164,30 @@
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
     }
+
+  /* your existing styles */
+
+  .exit-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #ef4444;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+  }
+
+  .exit-btn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+  }
+
   </style>
 </head>
 
@@ -177,7 +201,13 @@
           <p class="sub">Clock in, manage breaks, and logout</p>
         </div>
       </div>
-      <div class="chip" id="welcome"></div>
+     <div style="display:flex; gap:10px; align-items:center;">
+  <div class="chip" id="welcome"></div>
+
+  <button class="exit-btn" onclick="logout()" title="Exit">
+    ✕
+  </button>
+</div>
     </div>
 
     <div class="grid">
