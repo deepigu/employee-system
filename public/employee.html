@@ -286,6 +286,58 @@
 
     document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
 
+    // ----------------------------
+// ✅ IDLE TRACKER (15 minutes)
+// ----------------------------
+const IDLE_LIMIT_MS = 15 * 60 * 1000; // 15 mins
+let lastActivity = Date.now();
+let idleTriggered = false;
+
+// reset activity
+function markActivity() {
+  lastActivity = Date.now();
+  idleTriggered = false;
+}
+
+// listen to activity
+["mousemove", "mousedown", "keydown", "scroll", "touchstart"].forEach(evt => {
+  window.addEventListener(evt, markActivity, { passive: true });
+});
+
+// show notification + send to server
+async function handleIdle15() {
+  if (idleTriggered) return;
+  idleTriggered = true;
+
+  // 1) UI message
+  const msgEl = document.getElementById("msg");
+  const statusBox = document.getElementById("statusBox");
+  msgEl.style.color = "#b45309";
+  msgEl.innerText = "⚠ You have been inactive for 15 minutes.";
+  statusBox.innerText = "⚠ Idle for 15 minutes. Please move mouse / press a key.";
+
+  // 2) Send log to backend
+  try {
+    await fetch(BASE_URL + "/api/time/idle", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ minutes: 15 })
+    });
+  } catch (e) {}
+}
+
+// check every 5 seconds
+setInterval(() => {
+  if (!token) return;
+  const idleFor = Date.now() - lastActivity;
+  if (idleFor >= IDLE_LIMIT_MS) {
+    handleIdle15();
+  }
+}, 5000);
+    
     function showToast(text, ok = true) {
       const t = document.getElementById("toast");
       t.textContent = text || "";
