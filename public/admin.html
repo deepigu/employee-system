@@ -377,6 +377,11 @@
       el.style.color = ok ? "green" : "red";
     }
 
+    // ✅ AUTO REFRESH (page reload) after success
+    function refreshPage(delayMs = 600) {
+      setTimeout(() => window.location.reload(), delayMs);
+    }
+
     // -----------------------
     // ADD EMPLOYEE
     // -----------------------
@@ -412,13 +417,10 @@
           return;
         }
 
-        // ✅ show backend message (supports your updated API)
         setMsg(addMsg, data.message || "✅ New employee added successfully", true);
 
-        clearForm();
-
-        // Refresh employees count/list
-        fetchEmployees();
+        // ✅ refresh the whole page automatically
+        refreshPage(600);
 
       } catch (error) {
         console.error(error);
@@ -461,8 +463,8 @@
         setMsg(deleteMsg, data.message || "Employee deleted successfully", true);
         document.getElementById("delete_employee_id").value = "";
 
-        // Refresh employees count/list
-        fetchEmployees();
+        // ✅ refresh the whole page automatically
+        refreshPage(600);
 
       } catch (error) {
         console.error(error);
@@ -532,9 +534,6 @@
           return;
         }
 
-        // supports both formats:
-        // 1) old: [ ...rows ]
-        // 2) new: { success, totalEmployees, employees: [...] }
         const list = Array.isArray(data) ? data : (data.employees || []);
         allEmployees = list;
         renderEmployees(allEmployees);
