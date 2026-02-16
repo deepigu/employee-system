@@ -63,7 +63,7 @@
       font-weight: 800;
       border-radius: 10px;
       padding: 10px 12px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
       background: linear-gradient(135deg, #4f46e5, #9333ea);
       color: #fff;
     }
@@ -72,8 +72,6 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 22px rgba(79, 70, 229, 0.35);
     }
-
-    .btn:disabled { cursor: not-allowed; opacity: 0.75; transform: none; box-shadow: none; }
 
     .btn.secondary {
       background: #ffffff;
@@ -129,7 +127,6 @@
     }
 
     .actions { display: flex; gap: 10px; margin-top: 10px; }
-
     #addMsg, #deleteMsg { margin: 10px 0 0; font-size: 14px; font-weight: 700; }
 
     .table-wrap {
@@ -140,11 +137,7 @@
       margin-top: 12px;
     }
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      min-width: 560px;
-    }
+    table { border-collapse: collapse; width: 100%; min-width: 560px; }
 
     th, td {
       padding: 12px 12px;
@@ -153,10 +146,7 @@
       font-size: 14px;
     }
 
-    /* Sticky header + zebra for professional feel */
-    thead th { position: sticky; top: 0; z-index: 1; background: #f8fafc; }
-    tbody tr:nth-child(even) td { background: #fcfcff; }
-
+    th { background: #f8fafc; color: #111827; font-weight: 900; }
     tr:hover td { background: #f9fafb; }
 
     .muted { color: #6b7280; font-size: 13px; margin: 6px 0 0; }
@@ -186,64 +176,45 @@
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.18);
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      font-weight: 900;
-      color: #0f172a;
-      font-size: 13px;
-      white-space: nowrap;
+    /* ✅ Stats cards */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
     }
+    @media (max-width: 980px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.14);
+      backdrop-filter: blur(8px);
+    }
+    .stat .label { color:#6b7280; font-weight:800; font-size:12px; }
+    .stat .value { font-size:22px; font-weight:1000; margin-top:6px; color:#0f172a; }
 
     .badge {
-      display:inline-block; padding:6px 10px; border-radius:999px;
-      font-weight:900; font-size:12px; border:1px solid;
-    }
-    .badge.admin { background:#fee2e2; color:#991b1b; border-color:#fecaca; }
-    .badge.employee { background:#dcfce7; color:#166534; border-color:#bbf7d0; }
-
-    .stats {
-      margin-top: 16px;
-      display:grid;
-      gap:12px;
-      grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
-    }
-
-    .statNum { font-size: 28px; font-weight: 900; margin-top: 6px; }
-    .statMeta { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; color:#64748b; font-size:12px; font-weight:800; }
-
-    .note {
-      margin-top: 12px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.85);
-      text-align: center;
-    }
-
-    /* Toast */
-    #toast {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      z-index: 9999;
-      padding: 12px 14px;
-      border-radius: 12px;
-      display: none;
+      display:inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
       font-weight: 900;
-      box-shadow: 0 16px 30px rgba(0,0,0,.18);
-      color: #fff;
-      max-width: 320px;
+      font-size: 12px;
+      border: 1px solid #e5e7eb;
     }
+    .b-working { background:#ecfdf5; color:#047857; border-color:#a7f3d0; }
+    .b-break   { background:#fffbeb; color:#b45309; border-color:#fde68a; }
+    .b-out     { background:#fef2f2; color:#b91c1c; border-color:#fecaca; }
+    .b-never   { background:#f1f5f9; color:#334155; border-color:#e2e8f0; }
+
+    .note { margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.85); text-align: center; }
   </style>
 </head>
 
 <body>
-  <div id="toast"></div>
-
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
@@ -260,22 +231,23 @@
       </div>
     </div>
 
-    <!-- ✅ Professional Stats Row -->
-    <div class="stats">
-      <div class="card">
-        <div class="muted">Total Employees</div>
-        <div class="statNum" id="statTotalEmp">0</div>
-        <div class="statMeta"><span>Updated</span><span id="statUpdated1">—</span></div>
+    <!-- ✅ Stats row -->
+    <div class="stats" style="margin-top:16px;">
+      <div class="stat">
+        <div class="label">Total Employees</div>
+        <div class="value" id="statTotalEmployees">0</div>
       </div>
-      <div class="card">
-        <div class="muted">Today Logins</div>
-        <div class="statNum" id="statLogins">0</div>
-        <div class="statMeta"><span>Today</span><span id="statUpdated2">—</span></div>
+      <div class="stat">
+        <div class="label">Today Logins</div>
+        <div class="value" id="statTodayLogins">0</div>
       </div>
-      <div class="card">
-        <div class="muted">Today Logouts</div>
-        <div class="statNum" id="statLogouts">0</div>
-        <div class="statMeta"><span>Today</span><span id="statUpdated3">—</span></div>
+      <div class="stat">
+        <div class="label">Today Logouts</div>
+        <div class="value" id="statTodayLogouts">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">On Break Now</div>
+        <div class="value" id="statOnBreak">0</div>
       </div>
     </div>
 
@@ -292,7 +264,6 @@
             <input type="text" id="name" placeholder="Name" />
             <input type="email" id="email" placeholder="Email" />
             <input type="password" id="password" placeholder="Password" />
-
             <select id="role">
               <option value="employee">Employee</option>
               <option value="admin">Admin</option>
@@ -300,7 +271,7 @@
           </div>
 
           <div class="actions">
-            <button class="btn" id="btnAddEmp" onclick="addEmployee()">Add Employee</button>
+            <button class="btn" onclick="addEmployee()">Add Employee</button>
             <button class="btn secondary" onclick="clearForm()">Clear</button>
           </div>
 
@@ -315,10 +286,34 @@
           <input type="text" id="delete_employee_id" placeholder="Enter Employee ID" />
 
           <div class="actions">
-            <button class="btn secondary" id="btnDelEmp" onclick="deleteEmployee()">Delete Employee</button>
+            <button class="btn secondary" onclick="deleteEmployee()">Delete Employee</button>
           </div>
 
           <p id="deleteMsg"></p>
+        </div>
+
+        <!-- Live Status -->
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <div>
+              <h3 style="margin:0;">Live Status</h3>
+              <p class="muted">Current status based on last action.</p>
+            </div>
+            <button class="btn" onclick="fetchLiveStatus()">Refresh</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="liveTable" style="min-width:560px;">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Status</th>
+                  <th>Last Time</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -331,16 +326,11 @@
               <h3 style="margin:0;">Employees</h3>
               <p class="muted">Total employees and recently added accounts.</p>
             </div>
-            <div class="pill">Total: <span id="empCount">0</span></div>
+            <div class="chip">Total: <span id="empCount">0</span></div>
           </div>
 
           <div class="search-row">
-            <input
-              type="text"
-              id="empSearch"
-              placeholder="Search employees (id, name, email, role...)"
-              oninput="filterEmployees()"
-            />
+            <input type="text" id="empSearch" placeholder="Search employees (id, name, email, role...)" oninput="filterEmployees()" />
             <button class="btn secondary" onclick="clearEmpSearch()">Clear</button>
             <button class="btn" onclick="fetchEmployees()">Refresh</button>
           </div>
@@ -371,12 +361,7 @@
           </div>
 
           <div class="search-row">
-            <input
-              type="text"
-              id="logSearch"
-              placeholder="Search logs (employee id, action, time...)"
-              oninput="filterLogs()"
-            />
+            <input type="text" id="logSearch" placeholder="Search logs (employee id, action, time...)" oninput="filterLogs()" />
             <button class="btn secondary" onclick="clearSearch()">Clear</button>
           </div>
 
@@ -403,7 +388,12 @@
     const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
     const adminName = localStorage.getItem("employee_name");
-    const BASE_URL = window.location.origin;
+
+    // ✅ Works in local + render
+    const ORIGIN = window.location.origin;
+    const BASE_URL = (!ORIGIN || ORIGIN === "null")
+      ? "https://employee-system-84mh.onrender.com"
+      : ORIGIN;
 
     document.getElementById("adminName").innerText = adminName || "Admin";
 
@@ -414,10 +404,7 @@
     let allEmployees = [];
 
     function logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("employee_id");
-      localStorage.removeItem("employee_name");
+      localStorage.clear();
       window.location.href = "login.html";
     }
 
@@ -435,52 +422,22 @@
       el.style.color = ok ? "green" : "red";
     }
 
-    function showToast(text, ok = true) {
-      const t = document.getElementById("toast");
-      t.textContent = text || "";
-      t.style.display = "block";
-      t.style.background = ok ? "#16a34a" : "#ef4444";
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => (t.style.display = "none"), 2200);
-    }
-
-    function setBtnLoading(btn, loading, textWhenLoading = "Please wait...") {
-      if (!btn) return;
-      btn.disabled = loading;
-      btn.dataset.oldText = btn.dataset.oldText || btn.innerText;
-      btn.innerText = loading ? textWhenLoading : btn.dataset.oldText;
-    }
-
-    function nowTimeStr() {
-      return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-
-    function refreshPage(delayMs = 650) {
-      setTimeout(() => window.location.reload(), delayMs);
-    }
-
+    // -----------------------
+    // ✅ STATS
+    // -----------------------
     async function fetchStats() {
-      document.getElementById("statTotalEmp").innerText = allEmployees.length;
-      document.getElementById("statUpdated1").innerText = nowTimeStr();
-
       try {
-        const res = await fetch(BASE_URL + "/api/admin/report/daily", {
+        const res = await fetch(BASE_URL + "/api/admin/stats/today", {
           headers: { "Authorization": "Bearer " + token }
         });
         const data = await res.json();
         if (!res.ok) return;
 
-        const totals = (Array.isArray(data) ? data : []).reduce((acc, r) => {
-          acc.logins += Number(r.logins || 0);
-          acc.logouts += Number(r.logouts || 0);
-          return acc;
-        }, { logins: 0, logouts: 0 });
-
-        document.getElementById("statLogins").innerText = totals.logins;
-        document.getElementById("statLogouts").innerText = totals.logouts;
-        document.getElementById("statUpdated2").innerText = nowTimeStr();
-        document.getElementById("statUpdated3").innerText = nowTimeStr();
-      } catch {}
+        document.getElementById("statTotalEmployees").innerText = data.totalEmployees ?? 0;
+        document.getElementById("statTodayLogins").innerText = data.todayLogins ?? 0;
+        document.getElementById("statTodayLogouts").innerText = data.todayLogouts ?? 0;
+        document.getElementById("statOnBreak").innerText = data.onBreak ?? 0;
+      } catch (e) {}
     }
 
     // -----------------------
@@ -494,18 +451,14 @@
       const roleValue = document.getElementById("role").value;
 
       const addMsg = document.getElementById("addMsg");
-      const btn = document.getElementById("btnAddEmp");
-
       setMsg(addMsg, "", false);
 
       if (!id || !name || !email || !password || !roleValue) {
         setMsg(addMsg, "All fields are required", false);
-        showToast("❌ Please fill all fields", false);
         return;
       }
 
       try {
-        setBtnLoading(btn, true, "Adding...");
         const response = await fetch(BASE_URL + "/api/admin/add-employee", {
           method: "POST",
           headers: {
@@ -519,24 +472,17 @@
 
         if (!response.ok) {
           setMsg(addMsg, data.message || "Failed to add employee", false);
-          showToast(data.message || "❌ Failed to add employee", false);
           return;
         }
 
         setMsg(addMsg, data.message || "✅ New employee added successfully", true);
-        showToast(data.message || "✅ Employee added successfully", true);
-
         clearForm();
 
-        // ✅ Full page refresh so everything updates automatically
-        refreshPage();
+        // ✅ Auto refresh everything
+        await refreshAll();
 
       } catch (error) {
-        console.error(error);
         setMsg(addMsg, "Cannot connect to server", false);
-        showToast("❌ Cannot connect to server", false);
-      } finally {
-        setBtnLoading(btn, false);
       }
     }
 
@@ -546,62 +492,48 @@
     async function deleteEmployee() {
       const employeeId = document.getElementById("delete_employee_id").value.trim();
       const deleteMsg = document.getElementById("deleteMsg");
-      const btn = document.getElementById("btnDelEmp");
 
       setMsg(deleteMsg, "", false);
 
       if (!employeeId) {
         setMsg(deleteMsg, "Employee ID is required", false);
-        showToast("❌ Employee ID is required", false);
         return;
       }
 
       if (!confirm("Are you sure you want to delete employee: " + employeeId + " ?")) return;
 
       try {
-        setBtnLoading(btn, true, "Deleting...");
-        const res = await fetch(
-          BASE_URL + "/api/admin/employees/" + encodeURIComponent(employeeId),
-          {
-            method: "DELETE",
-            headers: { "Authorization": "Bearer " + token }
-          }
-        );
+        const res = await fetch(BASE_URL + "/api/admin/employees/" + encodeURIComponent(employeeId), {
+          method: "DELETE",
+          headers: { "Authorization": "Bearer " + token }
+        });
 
         const data = await res.json();
 
         if (!res.ok) {
           setMsg(deleteMsg, data.message || "Delete failed", false);
-          showToast(data.message || "❌ Delete failed", false);
           return;
         }
 
         setMsg(deleteMsg, data.message || "Employee deleted successfully", true);
-        showToast(data.message || "✅ Employee deleted", true);
         document.getElementById("delete_employee_id").value = "";
 
-        // ✅ Full page refresh so everything updates automatically
-        refreshPage();
+        // ✅ Auto refresh everything
+        await refreshAll();
 
       } catch (error) {
-        console.error(error);
         setMsg(deleteMsg, "Cannot connect to server", false);
-        showToast("❌ Cannot connect to server", false);
-      } finally {
-        setBtnLoading(btn, false);
       }
     }
 
     // -----------------------
-    // EMPLOYEES LIST + COUNT
+    // EMPLOYEES
     // -----------------------
     function renderEmployees(list) {
       const tbody = document.querySelector("#employeesTable tbody");
-      const countEl = document.getElementById("empCount");
+      document.getElementById("empCount").innerText = (list || []).length;
 
       tbody.innerHTML = "";
-      countEl.innerText = (list || []).length;
-
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4">No employees found</td></tr>`;
         return;
@@ -609,13 +541,11 @@
 
       list.forEach(emp => {
         const tr = document.createElement("tr");
-        const roleLower = String(emp.role || "").toLowerCase();
-        const roleClass = roleLower === "admin" ? "admin" : "employee";
         tr.innerHTML = `
           <td>${emp.employee_id || ""}</td>
           <td>${emp.name || ""}</td>
           <td>${emp.email || ""}</td>
-          <td><span class="badge ${roleClass}">${emp.role || ""}</span></td>
+          <td>${emp.role || ""}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -651,24 +581,19 @@
 
         if (!response.ok) {
           tbody.innerHTML = `<tr><td colspan="4">Error: ${data.message || "Failed"}</td></tr>`;
-          document.getElementById("empCount").innerText = "0";
           allEmployees = [];
-          fetchStats();
+          document.getElementById("empCount").innerText = "0";
           return;
         }
 
-        const list = Array.isArray(data) ? data : (data.employees || []);
-        allEmployees = list;
+        allEmployees = data.employees || [];
         renderEmployees(allEmployees);
         filterEmployees();
-        fetchStats();
 
       } catch (error) {
-        console.error(error);
         tbody.innerHTML = `<tr><td colspan="4">Cannot connect to server</td></tr>`;
-        document.getElementById("empCount").innerText = "0";
         allEmployees = [];
-        fetchStats();
+        document.getElementById("empCount").innerText = "0";
       }
     }
 
@@ -730,16 +655,74 @@
         filterLogs();
 
       } catch (error) {
-        console.error(error);
         tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
         allLogs = [];
       }
     }
 
+    // -----------------------
+    // LIVE STATUS
+    // -----------------------
+    function badge(status) {
+      if (status === "Working") return `<span class="badge b-working">Working</span>`;
+      if (status === "On Break") return `<span class="badge b-break">On Break</span>`;
+      if (status === "Logged Out") return `<span class="badge b-out">Logged Out</span>`;
+      return `<span class="badge b-never">Never Logged In</span>`;
+    }
+
+    async function fetchLiveStatus() {
+      const tbody = document.querySelector("#liveTable tbody");
+      tbody.innerHTML = `<tr><td colspan="3">Loading...</td></tr>`;
+
+      try {
+        const res = await fetch(BASE_URL + "/api/admin/live-status", {
+          headers: { "Authorization": "Bearer " + token }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          tbody.innerHTML = `<tr><td colspan="3">Error: ${data.message || "Failed"}</td></tr>`;
+          return;
+        }
+
+        const list = data.employees || [];
+        tbody.innerHTML = "";
+
+        if (!list.length) {
+          tbody.innerHTML = `<tr><td colspan="3">No employees found</td></tr>`;
+          return;
+        }
+
+        list.forEach(e => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${e.employee_id} - ${e.name || ""}</td>
+            <td>${badge(e.status)}</td>
+            <td>${e.last_timestamp || "-"}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="3">Cannot connect to server</td></tr>`;
+      }
+    }
+
+    // ✅ refresh everything
+    async function refreshAll() {
+      await fetchEmployees();
+      await fetchStats();
+      await fetchLiveStatus();
+      await fetchLogs();
+    }
+
     // Initial loads
-    fetchEmployees();
-    fetchLogs();
-    fetchStats();
+    refreshAll();
+
+    // ✅ Auto refresh every 10 seconds (professional)
+    setInterval(() => {
+      fetchStats();
+      fetchLiveStatus();
+    }, 10000);
   </script>
 </body>
 </html>
