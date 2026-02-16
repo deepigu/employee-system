@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+this is the employee.html code change it and give the full code <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -55,31 +55,6 @@
       font-size: 13px;
       border: 1px solid #e0e7ff;
       white-space: nowrap;
-    }
-
-    /* ✅ Exit icon button (Top right) */
-    .exit-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      background: #ef4444;
-      color: white;
-      font-size: 20px;
-      font-weight: 1000;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-      line-height: 1;
-    }
-    .exit-btn:hover {
-      background: #dc2626;
-      transform: scale(1.05);
-    }
-    .exit-btn:active {
-      transform: scale(0.98);
     }
 
     .grid {
@@ -202,12 +177,7 @@
           <p class="sub">Clock in, manage breaks, and logout</p>
         </div>
       </div>
-
-      <!-- ✅ Right side: Welcome chip + Exit icon -->
-      <div style="display:flex; gap:10px; align-items:center;">
-        <div class="chip" id="welcome"></div>
-        <button type="button" id="exitBtn" class="exit-btn" title="Exit">✕</button>
-      </div>
+      <div class="chip" id="welcome"></div>
     </div>
 
     <div class="grid">
@@ -215,10 +185,10 @@
         <h3>Quick Actions</h3>
         <p class="muted">Use the buttons below to update your work status.</p>
 
-        <button class="btn success" type="button" onclick="clockIn()">Clock In</button>
-        <button class="btn warning" type="button" onclick="startBreak()">Break Start</button>
-        <button class="btn primary" type="button" onclick="endBreak()">Break End</button>
-        <button class="btn danger"  type="button" onclick="doLogout()">Logout</button>
+        <button class="btn success" onclick="clockIn()">Clock In</button>
+        <button class="btn warning" onclick="startBreak()">Break Start</button>
+        <button class="btn primary" onclick="endBreak()">Break End</button>
+        <button class="btn danger" onclick="doLogout()">Logout</button>
 
         <p id="msg"></p>
       </div>
@@ -250,8 +220,8 @@
       <div class="countdown">Auto logout in <span id="idleSeconds">120</span> seconds</div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-here" onclick="imHere()">I’m here</button>
-        <button type="button" class="btn-logout" onclick="doLogout()">Logout now</button>
+        <button class="btn-here" onclick="imHere()">I’m here</button>
+        <button class="btn-logout" onclick="doLogout()">Logout now</button>
       </div>
     </div>
   </div>
@@ -266,12 +236,6 @@
     if (role !== "employee") window.location.href = "admin.html";
 
     document.getElementById("welcome").innerText = "Welcome, " + (name || "Employee");
-
-    // ✅ Attach exit button click reliably
-    document.addEventListener("DOMContentLoaded", () => {
-      const exitBtn = document.getElementById("exitBtn");
-      if (exitBtn) exitBtn.addEventListener("click", doLogout);
-    });
 
     // Optional: ask browser notification permission once
     if ("Notification" in window && Notification.permission === "default") {
@@ -301,19 +265,17 @@
           msgEl.style.color = "red";
           msgEl.innerText = data.message || "Request failed";
           statusBox.innerText = data.message || "Request failed";
-          return { ok: false, data };
+          return;
         }
 
         msgEl.style.color = "green";
         msgEl.innerText = data.message;
         statusBox.innerText = data.message;
 
-        return { ok: true, data };
       } catch (err) {
         msgEl.style.color = "red";
         msgEl.innerText = "Server error";
         statusBox.innerText = "Server error";
-        return { ok: false, data: { message: "Server error" } };
       }
     }
 
@@ -322,12 +284,7 @@
     function endBreak() { callAPI("/api/time/break-end"); }
 
     async function doLogout() {
-      // avoid double click issues
-      const exitBtn = document.getElementById("exitBtn");
-      if (exitBtn) exitBtn.disabled = true;
-
       try { await callAPI("/api/time/logout"); } catch (e) {}
-
       localStorage.clear();
       window.location.href = "login.html";
     }
@@ -412,6 +369,7 @@
       countdownTimer = null;
     }
 
+    // Called when employee clicks “I’m here”
     async function imHere() {
       hideIdlePopup();
       idleTriggered = false;
@@ -424,17 +382,24 @@
       msgEl.innerText = "✅ Thanks! You are marked as active.";
       statusBox.innerText = "✅ Active";
     }
+
+    // expose to button
     window.imHere = imHere;
 
+    // Idle check loop
     setInterval(async () => {
       const idleFor = Date.now() - lastActivity;
 
       if (!idleTriggered && idleFor >= IDLE_LIMIT_MS) {
         idleTriggered = true;
 
+        // log idle event once
         await sendIdle(15);
+
+        // show popup + start auto logout countdown
         showIdlePopup();
 
+        // show status message too
         const msgEl = document.getElementById("msg");
         const statusBox = document.getElementById("statusBox");
         msgEl.style.color = "#b45309";
