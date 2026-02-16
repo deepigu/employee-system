@@ -11,13 +11,9 @@ const SECRET = process.env.SECRET_KEY;
 // Middleware
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ message: "Unauthorized - No token" });
-  }
+  if (!authHeader) return res.status(401).json({ message: "Unauthorized - No token" });
 
   const token = authHeader.split(" ")[1];
-
   try {
     const decoded = jwt.verify(token, SECRET);
     req.employeeId = decoded.employee_id;
@@ -27,66 +23,44 @@ function authenticate(req, res, next) {
   }
 }
 
-// ----------------------------
-// Clock In
-// ----------------------------
-router.post("/clock-in", authenticate, async (req, res) => {
-  const timestamp = new Date().toISOString();
-
+// ✅ helper to insert with SQLite local time
+function insertLog(employeeId, action, res, successMessage) {
   db.run(
-    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'login', ?)",
-    [req.employeeId, timestamp],
+    `INSERT INTO time_logs (employee_id, action, timestamp)
+     VALUES (?, ?, datetime('now','localtime'))`,
+    [employeeId, action],
     (err) => {
       if (err) return res.status(500).json({ message: err.message });
 
-      res.json({ message: "Clock-in successful", timestamp });
+      // Return also "server time" for testing
+      db.get(`SELECT datetime('now','localtime') AS serverTime`, [], (e2, row) => {
+        return res.json({
+          message: successMessage,
+          serverTime: row?.serverTime || ""
+        });
+      });
     }
   );
+}
+
+// Clock In
+router.post("/clock-in", authenticate, (req, res) => {
+  insertLog(req.employeeId, "login", res, "Clock-in successful");
 });
 
 // Logout
 router.post("/logout", authenticate, (req, res) => {
-  const timestamp = new Date().toISOString();
-
-  db.run(
-    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'logout', ?)",
-    [req.employeeId, timestamp],
-    function (err) {
-      if (err) return res.status(500).json({ message: err.message });
-
-      res.json({ message: "Logout successful", timestamp });
-    }
-  );
+  insertLog(req.employeeId, "logout", res, "Logout successful");
 });
 
 // Break Start
 router.post("/break-start", authenticate, (req, res) => {
-  const timestamp = new Date().toISOString();
-
-  db.run(
-    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'break-start', ?)",
-    [req.employeeId, timestamp],
-    function (err) {
-      if (err) return res.status(500).json({ message: err.message });
-
-      res.json({ message: "Break started", timestamp });
-    }
-  );
+  insertLog(req.employeeId, "break-start", res, "Break started");
 });
 
 // Break End
 router.post("/break-end", authenticate, (req, res) => {
-  const timestamp = new Date().toISOString();
-
-  db.run(
-    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, 'break-end', ?)",
-    [req.employeeId, timestamp],
-    function (err) {
-      if (err) return res.status(500).json({ message: err.message });
-
-      res.json({ message: "Break ended", timestamp });
-    }
-  );
+  insertLog(req.employeeId, "break-end", res, "Break ended");
 });
 
 module.exports = router;
