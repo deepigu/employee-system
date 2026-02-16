@@ -164,6 +164,27 @@
       background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
     }
+
+    .exit-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 10px;
+  background: #ef4444;
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.exit-btn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
   </style>
 </head>
 
@@ -177,7 +198,12 @@
           <p class="sub">Clock in, manage breaks, and logout</p>
         </div>
       </div>
-      <div class="chip" id="welcome"></div>
+      <div style="display:flex; gap:10px; align-items:center;">
+  <div class="chip" id="welcome"></div>
+
+  <!-- EXIT BUTTON -->
+  <button type="button" class="exit-btn" id="exitBtn">✕</button>
+</div>
     </div>
 
     <div class="grid">
@@ -407,6 +433,10 @@
         statusBox.innerText = "⚠ Idle for 15 minutes. Confirmation needed.";
       }
     }, CHECK_EVERY_MS);
+    document.getElementById("exitBtn").onclick = function () {
+  localStorage.clear();
+  window.location.href = "login.html";
+};
   </script>
 </body>
 </html>
