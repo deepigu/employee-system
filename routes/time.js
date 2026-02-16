@@ -62,5 +62,23 @@ router.post("/break-start", authenticate, (req, res) => {
 router.post("/break-end", authenticate, (req, res) => {
   insertLog(req.employeeId, "break-end", res, "Break ended");
 });
+// ----------------------------
+// Idle Alert (15 mins)
+// ----------------------------
+router.post("/idle", authenticate, (req, res) => {
+  const timestamp = new Date().toISOString();
+  const { minutes } = req.body || {};
 
+  // save action: idle-15 (or idle-<minutes>)
+  const action = `idle-${minutes || 15}`;
+
+  db.run(
+    "INSERT INTO time_logs (employee_id, action, timestamp) VALUES (?, ?, ?)",
+    [req.employeeId, action, timestamp],
+    function (err) {
+      if (err) return res.status(500).json({ message: err.message });
+      res.json({ message: `Idle logged (${action})`, timestamp });
+    }
+  );
+});
 module.exports = router;
