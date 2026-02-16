@@ -25,6 +25,7 @@
       max-width: 900px;
     }
 
+    /* Top bar */
     .topbar {
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(255,255,255,0.7);
@@ -75,6 +76,29 @@
       white-space: nowrap;
     }
 
+    /* ✅ Exit button */
+    .exit-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exit-btn:hover {
+      background: #dc2626;
+      transform: scale(1.06);
+    }
+
+    /* Cards */
     .grid {
       margin-top: 16px;
       display: grid;
@@ -110,6 +134,7 @@
       margin: 0 0 12px;
     }
 
+    /* Buttons */
     .btn {
       width: 100%;
       border: none;
@@ -190,6 +215,7 @@
   <div id="toast"></div>
 
   <div class="wrap">
+    <!-- Top bar -->
     <div class="topbar">
       <div class="brand">
         <div class="logo"></div>
@@ -198,7 +224,12 @@
           <p class="sub">Clock in, manage breaks, and logout</p>
         </div>
       </div>
-      <div class="chip" id="welcome"></div>
+
+      <!-- ✅ Right side: Welcome chip + Exit icon -->
+      <div style="display:flex; gap:10px; align-items:center;">
+        <div class="chip" id="welcome"></div>
+        <button class="exit-btn" onclick="exitPage()" title="Exit">✕</button>
+      </div>
     </div>
 
     <div class="grid">
@@ -220,6 +251,7 @@
         <div class="card">
           <h3>Status</h3>
           <p class="muted">Your latest action result will appear here.</p>
+
           <div style="padding:14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;">
             <div style="font-weight:900;color:#111827;margin-bottom:6px;">Last Message</div>
             <div id="statusBox" style="color:#374151;font-weight:600;">No action yet.</div>
@@ -230,7 +262,7 @@
           </p>
         </div>
 
-        <!-- ✅ Change Password Card -->
+        <!-- Change Password -->
         <div class="card">
           <h3>Change Password</h3>
           <p class="muted">Update your password securely.</p>
@@ -321,7 +353,7 @@
     function startBreak() { callAPI("/api/time/break-start"); }
     function endBreak() { callAPI("/api/time/break-end"); }
 
-    // ✅ Better logout: wait for API, then clear storage
+    // Logout button (calls API then clears storage)
     async function logoutNow() {
       try {
         await callAPI("/api/time/logout");
@@ -331,7 +363,14 @@
       }
     }
 
-    // ✅ Change Password
+    // ✅ Exit icon button (quick exit)
+    function exitPage() {
+      if (!confirm("Are you sure you want to exit?")) return;
+      localStorage.clear();
+      window.location.href = "login.html";
+    }
+
+    // Change Password
     async function changePassword() {
       const oldPassword = document.getElementById("oldPass").value.trim();
       const newPassword = document.getElementById("newPass").value.trim();
